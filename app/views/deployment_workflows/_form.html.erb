@@ -1,0 +1,11 @@
+<div class="box tabular">
+	<p><%= label_tag('deployment_workflow_environment', l(:label_workflow_environment_label)) %><%= f.text_field :environment %>
+	<em class="info"><%= l(:text_workflow_environment_info)%></em>
+    </p>
+    <p><%= label_tag('deployment_workflow_options', l(:label_workflow_options_label)) %><%= f.text_field :options %>
+	<em class="info"><%= l(:text_workflow_options_info)%></em>
+    </p>
+</div>
+<p>
+  <%= submit_tag(@workflow.new_record? ? l(:button_create) : l(:button_save)) %>
+</p>

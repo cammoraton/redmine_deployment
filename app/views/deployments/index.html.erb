@@ -1,0 +1,117 @@
+<% if User.current.allowed_to?(:manage_deployment_targets, @project) %>
+<div class="contextual">
+  <% if params[:edit] %>
+	<%= link_to l(:label_lock_deployments), url_for(:controller => 'deployments', :action => 'index', :id => @project), :class => 'icon icon-lock' %>
+  <% else %>
+	<%= link_to l(:label_manage_deployments), url_for(:controller => 'deployments', :action => 'index', :id => @project, :edit => true), :class => 'icon icon-edit' %>
+  <% end %>
+</div>
+<% end %>
+<h2><%=l(:label_deploy)%></h2>
+<div class="none">
+<% if @workflow.empty? %>
+   <p class="nodata">  <%= link_to l(:label_environment_new), url_for(:controller => 'deployment_workflows', :action => 'new', :id => @project), :class => 'icon icon-add' %></p>
+<% else %>
+<% @workflow.each do |env| %>
+  <% @servers = env.deployment_servers %>
+
+  <div class="contextual">
+  <% if params[:edit] %>
+    <% if User.current.allowed_to?(:manage_deployment_targets, @project) %>
+      <% if env.order > 1 %>
+        <%= link_to l(:label_deployment_workflow_move_up), url_for(:controller => 'deployment_workflows', :action => 'move_up', :id => @project, :workflow_id => env.id), :class => 'icon icon-move' %>
+      <% end %>
+      <% if @workflow.last != env %>
+        <%= link_to l(:label_deployment_workflow_move_down), url_for(:controller => 'deployment_workflows', :action => 'move_down', :id => @project, :workflow_id => env.id ), :class => 'icon icon-move' %>
+      <% end %>
+      <%= link_to l(:label_deployment_workflow_delete), url_for(:controller => 'deployment_workflows', :action => 'delete', :id => @project, :workflow_id => env.id), :class => 'icon icon-del' %>
+      <% if ! @servers.empty? %>
+  	    <%= link_to l(:label_environment_server_new), url_for(:controller => 'deployment_servers', :action => 'new', :id => @project, :workflow_id => env.id), :class => 'icon icon-add' %>
+      <% end %>
+    <% end %>
+  <% else %>
+    History
+  <% end %>
+  </div>
+  
+  <h3><%= env.environment %></h3>
+  <% if @servers.empty? %>
+    <p class="nodata">
+     <% if User.current.allowed_to?(:manage_deployment_targets, @project) %>
+       <%= link_to l(:label_environment_server_new), url_for(:controller => 'deployment_servers', :action => 'new', :id => @project, :workflow_id => env.id), :class => 'icon icon-add' %>
+     <% else %>
+       No data
+     <% end %>
+    </p>
+  <% else %>
+  <table class="list">
+  	<% if params[:edit] %>
+  	<colgroup>
+      <col span="1" style="width: 20%">
+      <col span="1" style="width: 10%">
+      <col span="1" style="width: 40%">
+      <col span="1" style="width: 30%">
+    </colgroup>
+    <thead>
+      <tr>
+      	<th>Server</th>
+      	<th>Type</th>
+      	<th>Description</th>
+      	<th>Actions</th>
+      </tr>
+    </thead>
+  	<% else %>
+    <colgroup>
+      <col span="1" style="width: 20%">
+      <col span="1" style="width: 10%">
+      <col span="1" style="width: 40%">
+      <col span="1" style="width: 30%">
+    </colgroup>
+    <thead>
+      <tr>
+      	<th>Server</th>
+      	<th>Name</th>
+      	<th>Comment</th>
+      	<th>Actions</th>
+      </tr>
+    </thead>
+    <% end %>
+    <tbody>
+    <% @servers.each do |server| %>
+      <tr class="even">
+      <% if params[:edit] %>
+        <td><%= server.name %></td>
+        <td></td>
+        <td><%= server.description %></td>
+        <td class="buttons">
+        <% if User.current.allowed_to?(:manage_deployment_targets, @project) %>
+          <%= link_to l(:label_deployment_server_delete), url_for(:controller => 'deployment_servers', :action => 'delete', :id => @project, :workflow_id => env.id, :server_id => server.id), :class => 'icon icon-del' %>  
+        <% end %>
+        </td>
+     <% else %>
+        <td><%= server.name %></td>
+        <td></td>
+        <td></td>
+        <td class="buttons">
+        <% if User.current.allowed_to?(:manage_deployments, @project) %>
+          <% if env.order > 1 %>
+          <%= link_to l(:label_deployment_promote), url_for(:controller => 'deployment_workflows', :action => 'move_up', :id => @project, :workflow_id => env.id), :class => 'icon icon-move' %>
+          <% end %>
+        <% end %>
+        <%= link_to l(:label_deployment_history), url_for(:controller => 'deployment_workflows', :action => 'move_up', :id => @project, :workflow_id => env.id), :class => 'icon icon-report' %>
+     <% end %>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <% end %>     
+<% end %>
+<% end %>
+</div>
+<% if params[:edit] %>
+  <% if User.current.allowed_to?(:manage_deployment_targets, @project) %>
+  <p class ="nodata">
+    <%= link_to l(:label_environment_new), url_for(:controller => 'deployment_workflows', :action => 'new', :id => @project), :class => 'icon icon-add' %>
+  </p>
+  <% end %>
+<% end %>

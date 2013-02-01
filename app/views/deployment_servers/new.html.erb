@@ -1,0 +1,4 @@
+<h2><%= l(:label_deploy_target_new) %> for <%= @workflow.environment %> Environment</h2>
+<%= form_for @server, :url => {:action => 'create', :id => @project, :workflow_id => @workflow}, :html => {:method=>:put} do |f| %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+<% end %>

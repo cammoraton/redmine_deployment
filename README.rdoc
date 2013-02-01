@@ -1,0 +1,18 @@
+= deployment
+
+Prototype for a deployments plugin in redmine, based on remote triggering SCM updates and checkouts.
+
+You need to run the delayed job setup stuff and rerun bundle install.
+
+This is fairly basic right now, indexes need to be done, a lot of status updates are done with redirects as opposed
+to ajax, and dummy methods are freakin' everywhere.  Milestones need added and the ui needs re-examined.  It may
+make more sense to have deployments linked to versions.
+
+I still need to add in settings as well, because you may want to force an initial deployment to a default server
+or environment and only promotion.
+
+Types need done.  Right now thinking remote scm, capistrano, dummy(static link to a repository), and 
+puppet run trigger.
+
+After types come tiered actions.
+

@@ -1,0 +1,15 @@
+<% @workflow  = DeploymentWorkflow.find_all_by_project_id(@project.id) %>
+<% if !@workflow.empty?%>
+<div id="related-deployments">
+<h3>Deployments</h3>
+<% @workflow.each do |env| %>
+  <% @servers = env.deployment_servers %>
+  <% if !@servers.empty? %>
+  <h4><%= env.environment %></h4>
+  <% @servers.each do |server| %>
+    <h5><%= server.name %></h5>
+  <% end %>
+  <% end %>
+<% end %>
+</div>
+<% end %>
