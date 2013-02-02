@@ -1,0 +1,34 @@
+<div class="contextual">
+	
+</div>
+<% if params[:server_id] %>
+  <h3><%= DeploymentServer.find(params[:server_id]).name %>'s Deployments</h3>
+<% elsif params[:workflow_id] %>
+  <h3><%= DeploymentWorkflow.find(params[:workflow_id]).environment %>'s Deployments</h3>
+<% else %>
+  <h3>All Deployments</h3>
+<% end %>
+<% if @deployments.empty? %>
+<p class="nodata">
+	No deployments
+</p>
+<% else %>
+  <table class="list">
+  	<thead>
+  	  <th>Date</th>
+  	  <th>Status</th>
+  	  <th>Comment</th>
+  	  <th>Actions</th>
+    </thead>
+    <tbody>
+  <% @deployments.each do |deployment| %>
+    <tr>
+      <td><%= deployment.deployed_on %></td>
+      <td><%= deployment.status %></td>
+      <td><%= deployment.comment %>/td>
+      <td class="buttons">Redeploy Log</td>
+    </tr>
+  <% end %>
+    </tbody>
+  </table>
+<% end %>

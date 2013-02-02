@@ -3,7 +3,8 @@ class CreateDeploymentServers < ActiveRecord::Migration
     create_table :deployment_servers do |t|
       t.string :name
       t.string :description
-      t.string :type
+      t.string :deploy_type
+      t.boolean :is_default, :default => false, :null => false
       t.text :metadata
       t.references :deployment_workflow
       t.references :project

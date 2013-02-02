@@ -35,10 +35,10 @@ Redmine::Plugin.register :deployment do
   # Need to add in a check for if there are valid targets for the project.
 
   project_module :deployment do
-    permission :view_deployments, { :deployments => [ :show,:index ] }
-    permission :manage_deployments, { :deployments => [ :show,:index,:edit,:new,:update,:create ] }
+    permission :view_deployments, { :deployments => [ :show,:index,:history ] }
+    permission :manage_deployments, { :deployments => [ :show,:index,:edit,:new,:update,:create,:promote,:history ] }
     
-    permission :manage_deployment_targets, { :deployments => [ :show,:index,:edit,:new,:update,:create ], :deployment_workflows => [ :move_up,:move_down,:create,:new,:delete ], :deployment_servers => [:new,:edit,:update,:create,:delete] }
+    permission :manage_deployment_targets, { :deployments => [ :show,:index,:edit,:new,:update,:create,:promote,:history ], :deployment_workflows => [ :move_up,:move_down,:create,:new,:delete ], :deployment_servers => [:new,:edit,:update,:create,:delete] }
   end
 end
 

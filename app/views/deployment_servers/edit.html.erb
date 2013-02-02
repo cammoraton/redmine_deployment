@@ -1,0 +1,4 @@
+<h2><%= @server.name %></h2>
+<%= form_for @server, :url => {:action => 'update', :id => @project, :workflow_id => @workflow}, :html => {:method=>:put} do |f| %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+<% end %>

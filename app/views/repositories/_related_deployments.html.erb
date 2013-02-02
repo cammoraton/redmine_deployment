@@ -1,15 +1,37 @@
 <% @workflow  = DeploymentWorkflow.find_all_by_project_id(@project.id) %>
 <% if !@workflow.empty?%>
+<% @deployments = DeploymentObject.find_all_by_changeset_id(@changeset.id) %>
 <div id="related-deployments">
-<h3>Deployments</h3>
-<% @workflow.each do |env| %>
-  <% @servers = env.deployment_servers %>
-  <% if !@servers.empty? %>
-  <h4><%= env.environment %></h4>
-  <% @servers.each do |server| %>
-    <h5><%= server.name %></h5>
-  <% end %>
+<div class="contextual">
+    <%= link_to l(:button_add), url_for(:controller => 'deployments', :action => 'new', :id => @project, :changeset_id => @changeset.id, :deploy_type => 'repository') %>
+</div>
+<h3>Related Deployments</h3>
+<% if !@deployments.empty? %>
+<table class="list">
+  <thead>
+  	<th>Environment</th>
+  	<th>Server</th>
+  	<th>Deploy Date</th>
+  	<th>Author</th>
+  	<th>Comment</th>
+  	<th>Status</th>
+  	<th>Actions</th>
+  </thead>
+  <tbody>
+  <% @deployments.each do |deployment| %>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="buttons">
+      </td>	
+    </tr>
   <% end %>
 <% end %>
+  </tbody>
+</table>
 </div>
 <% end %>

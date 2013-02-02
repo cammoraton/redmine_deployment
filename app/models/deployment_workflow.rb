@@ -5,6 +5,7 @@ class DeploymentWorkflow < ActiveRecord::Base
   
   belongs_to :project
   has_many :deployment_servers, :dependent => :destroy
+  has_many :deployment_objects, :through => :deployment_servers
   
   validates_uniqueness_of :order, :scope => :project_id
   validates_uniqueness_of :environment, :scope => :project_id
@@ -12,7 +13,6 @@ class DeploymentWorkflow < ActiveRecord::Base
   safe_attributes 'environment',
     'order',
     'options'
-  
 
   def move_up
     @workflow = DeploymentWorkflow.find_by_order(self.order - 1, :conditions => "project_id = #{self.project_id}")

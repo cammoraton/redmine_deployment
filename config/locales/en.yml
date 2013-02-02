@@ -32,3 +32,4 @@ en:
   deployment_server_type_dummy: "Dummy"
   deployment_server_type_puppet: "Puppet Run"
   deployment_server_type_cap: "Capistrano"
+  deployment_server_type_jenkins: "Jenkins/Hudson Job"

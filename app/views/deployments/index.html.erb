@@ -29,8 +29,8 @@
   	    <%= link_to l(:label_environment_server_new), url_for(:controller => 'deployment_servers', :action => 'new', :id => @project, :workflow_id => env.id), :class => 'icon icon-add' %>
       <% end %>
     <% end %>
-  <% else %>
-    History
+  <% elsif !env.deployment_objects.empty? %>
+    <%= link_to l(:label_deployment_history), url_for(:controller => 'deployments', :action => 'history', :id => @project, :workflow_id => env.id), :class => 'icon icon-report' %>
   <% end %>
   </div>
   
@@ -62,16 +62,20 @@
     </thead>
   	<% else %>
     <colgroup>
-      <col span="1" style="width: 20%">
+      <col span="1" style="width: 15%">
+      <col span="1" style="width: 15%">
       <col span="1" style="width: 10%">
       <col span="1" style="width: 40%">
-      <col span="1" style="width: 30%">
+      <col span="1" style="width: 10%">
+      <col span="1" style="width: 10%">
     </colgroup>
     <thead>
       <tr>
       	<th>Server</th>
+      	<th>Date</th>
       	<th>Name</th>
       	<th>Comment</th>
+      	<th>Status</th>
       	<th>Actions</th>
       </tr>
     </thead>
@@ -90,15 +94,45 @@
         </td>
      <% else %>
         <td><%= server.name %></td>
-        <td></td>
-        <td></td>
-        <td class="buttons">
-        <% if User.current.allowed_to?(:manage_deployments, @project) %>
-          <% if env.order > 1 %>
-          <%= link_to l(:label_deployment_promote), url_for(:controller => 'deployment_workflows', :action => 'move_up', :id => @project, :workflow_id => env.id), :class => 'icon icon-move' %>
+        <% if server.deploy_type != "dummy" %>
+          <% @deployments = DeploymentObject.find_all_by_deployment_server_id(server.id) %>
+          <% if !@deployments.empty? %>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="buttons">
+            <% if User.current.allowed_to?(:manage_deployments, @project) %>
+              <% if env.order > 1 %>
+                <%= link_to l(:label_deployment_promote), url_for(:controller => 'deployments', :action => 'promote', :id => @project, :server_id => server.id), :class => 'icon icon-move' %>
+              <% end %>
+            <% end %>
+          <% else %>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>Not Yet Deployed</td>
+            <td>N/A</td>
+            <td class="buttons">
           <% end %>
+          <% if !DeploymentObject.find_all_by_deployment_server_id(server.id).empty? %>
+            <%= link_to l(:label_deployment_history), url_for(:controller => 'deployments', :action => 'history', :id => @project, :server_id => server.id), :class => 'icon icon-report' %>
+          <% end %>
+          </td>
+        <% else %>
+          <% @repository = @project.repository %>
+          <% @changeset = @repository.changesets.last %>
+          <td><%= @changeset.committed_on %></td>
+          <td><%= @changeset.author %></td>
+          <td><%= @changeset.comments %></td>
+          <td><%= link_to "Revision #{@changeset.revision}", url_for(:controller => 'repositories', :action => 'revision', :id => @project, :rev => @changeset.id ) %></td>
+          <td class="buttons">
+          <% if User.current.allowed_to?(:manage_deployments, @project) %>
+            <% if env.order > 1 %>
+              <%= link_to l(:label_deployment_promote), url_for(:controller => 'deployments', :action => 'promote', :id => @project, :server_id => server.id), :class => 'icon icon-move' %>
+            <% end %>
+          <% end %>
+          <%= link_to l(:label_deployment_history), url_for(:controller => 'repositories', :action => 'show', :id => @project, :repository_id => @repository.id), :class => 'icon icon-report' %>
+          </td>
         <% end %>
-        <%= link_to l(:label_deployment_history), url_for(:controller => 'deployment_workflows', :action => 'move_up', :id => @project, :workflow_id => env.id), :class => 'icon icon-report' %>
      <% end %>
       </tr>
     <% end %>
