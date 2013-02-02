@@ -20,13 +20,15 @@
   <tbody>
   <% @deployments.each do |deployment| %>
     <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td><%= deployment.deployment_server.deployment_workflow.environment %></td>
+      <td><%= deployment.deployment_server.name %></td>
+      <td><%= deployment.created_on %></td>
+      <% user = User.find(deployment.user_id) %>
+      <td><%= user.firstname %> <%= user.lastname %></td>
+      <td><%= deployment.description %></td>
+      <td><%= deployment.status %></td>
       <td class="buttons">
+      	Redeploy Log
       </td>	
     </tr>
   <% end %>

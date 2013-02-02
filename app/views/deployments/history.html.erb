@@ -2,9 +2,9 @@
 	
 </div>
 <% if params[:server_id] %>
-  <h3><%= DeploymentServer.find(params[:server_id]).name %>'s Deployments</h3>
+  <h3>Deployments to <%= DeploymentServer.find(params[:server_id]).name %></h3>
 <% elsif params[:workflow_id] %>
-  <h3><%= DeploymentWorkflow.find(params[:workflow_id]).environment %>'s Deployments</h3>
+  <h3>Deployments to <%= DeploymentWorkflow.find(params[:workflow_id]).environment %></h3>
 <% else %>
   <h3>All Deployments</h3>
 <% end %>
@@ -16,16 +16,25 @@
   <table class="list">
   	<thead>
   	  <th>Date</th>
-  	  <th>Status</th>
+  	  <% if params[:workflow_id] %>
+  	  <th>Server</th>
+  	  <% end %>
+  	  <th>Author</th>
   	  <th>Comment</th>
+  	  <th>Status</th>
   	  <th>Actions</th>
     </thead>
     <tbody>
   <% @deployments.each do |deployment| %>
     <tr>
-      <td><%= deployment.deployed_on %></td>
+      <td><%= deployment.created_on %></td>
+      <% if params[:workflow_id] %>
+      <td><%= deployment.deployment_server.name %></td>
+      <% end %>
+      <% user = User.find(deployment.user_id) %>
+      <td><%= user.firstname %> <%= user.lastname %></td>
+      <td><%= deployment.description %></td>
       <td><%= deployment.status %></td>
-      <td><%= deployment.comment %>/td>
       <td class="buttons">Redeploy Log</td>
     </tr>
   <% end %>

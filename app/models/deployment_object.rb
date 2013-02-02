@@ -4,16 +4,18 @@ class DeploymentObject < ActiveRecord::Base
   include Redmine::SafeAttributes
   unloadable
   
+  attr_accessor :workflow_id
+  
   belongs_to :deployment_server
   belongs_to :changeset
   
   has_many :issues
   
-  validates_uniqueness_of :changeset_id, :deployment_server_id
-  
+  validates_presence_of :changeset_id, :deployment_server_id
   safe_attributes 'description',
     'status',
-    'deployed_on',
+    'created_on',
+    'updated_on',
     'log'
   
   def queue_job
@@ -22,6 +24,10 @@ class DeploymentObject < ActiveRecord::Base
   
   def job_status
     
+  end
+  
+  def workflow_id
+    self.deployment_server.deployment_workflow_id
   end
 end    
 

@@ -1,0 +1,13 @@
+<div class="box tabular">
+  <%= f.hidden_field :changeset_id, :value => params[:changeset_id] %>
+  <p>
+    <%= label_tag('deployment_workflow_select', l(:label_deployment_workflow_select)) %>
+  	<%= f.select :workflow_id, options_for_select(@project.deployment_workflows.collect {|s| [s.environment, s.id]})%>
+  	<em class="info">
+      <%= l(:text_deployment_workflow_select) %>
+    </em>
+  </p>
+</div>
+<p>
+  <%= submit_tag(l(:button_next)) %>
+</p>

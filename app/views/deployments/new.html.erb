@@ -1,4 +1,11 @@
 <h2>New Deployment</h2>
-<% if params[:deploy_type] == 'scm' %>
-  SCM
+<% cur_object = params[:deployment_object] %>
+<% if !params[:workflow_id] and !params[:workflow_select] %>
+  <%= form_for :workflow_select, :url => {:action => 'new', :id => @project }, :html => {:method=>:put} do |f| %>
+    <%= render :partial => 'workflow_select', :locals => {:f => f} %>
+  <% end %>
+<% else %>
+  <%= form_for @deployment, :url => {:action => 'create', :id => @project}, :html => {:method=>:put} do |f| %>
+    <%= render :partial => 'form', :locals => {:f => f} %>
+  <% end %>
 <% end %>

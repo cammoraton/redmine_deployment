@@ -1,0 +1,33 @@
+<% if params[:workflow_id] 
+  @selected_workflow = DeploymentWorkflow.find(params[:workflow_id]) %>
+<% else 
+  @selected_workflow = DeploymentWorkflow.find(params[:workflow_select][:workflow_id]) %>
+<% end %>
+<div class="box tabular">
+  <p>
+  	<%= label_tag('deployment_workflow_select', l(:label_deployment_workflow_select)) %>
+  	<%= @selected_workflow.environment %>
+  	<em class="info">
+      <%= l(:text_deployment_workflow_select) %>
+    </em>
+  <p>
+    <%= label_tag('deployment_server_select', l(:label_deployment_server_select)) %>
+  	<%= f.select :deployment_server_id, options_for_select(@selected_workflow.deployment_servers.collect {|s| [s.name, s.id]}) %>
+  	<em class="info">
+      <%= l(:text_deployment_server_select) %>
+    </em>
+  </p>
+  <p>
+  	<%= f.text_field :changeset_id %>
+  </p>
+  <p>
+  	<%= label_tag('deployment_comment', l(:label_deployment_comment)) %>
+  	<%= f.text_field :description %>
+  	<em class="info">
+  	  <%= l(:text_deployment_comment) %>
+    </em>
+  </p>
+</div>
+<p>
+  <%= submit_tag(@deployment.new_record? ? l(:button_create) : l(:button_save)) %>
+</p>

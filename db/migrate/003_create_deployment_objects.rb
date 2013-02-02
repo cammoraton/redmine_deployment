@@ -3,7 +3,8 @@ class CreateDeploymentObjects < ActiveRecord::Migration
     create_table :deployment_objects do |t|
       t.string :description
       t.string :status
-      t.date :deployed_on
+      t.timestamp :created_on
+      t.timestamp :updated_on
       t.text :log
       t.references :project
       t.references :version

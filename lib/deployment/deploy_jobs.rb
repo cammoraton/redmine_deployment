@@ -8,10 +8,12 @@ class DeployJob < Struct.new(:deployment_id)
   end
 
   def perform
-    deployment = Deployment.find(deployment_id)
+    deployment = DeploymentObject.find(deployment_id)
     deployment.status = "Running"
-    sleep(5)
-    deployment.status = "Ran"
+    deployment.save!
+    sleep(20)
+    deployment.status = "OK"
+    deployment.save!
   end
   
   def after(job)

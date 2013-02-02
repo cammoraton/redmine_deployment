@@ -12,6 +12,10 @@ class DeploymentsController < ApplicationController
       @deployment = DeploymentObject.new
       if params[:changeset_id]
         @deployment.changeset_id = params[:changeset_id]
+      elsif params[:workflow_select]
+        if params[:workflow_select][:changeset_id]
+          @deployment.changeset_id = params[:workflow_select][:changeset_id]
+        end
       end
     end
   end
@@ -34,6 +38,30 @@ class DeploymentsController < ApplicationController
   end
   
   def promote
+    @deployment = DeploymentObject.new
+    if params[:deployment_id]
+      @reference = DeploymentObject.find(params[:deployment_id])
+      @deployment.description = @reference.description
+      @deployment.changeset = @reference.changeset
+    elsif params[:changeset_id]
+      @reference = Changeset.find(params[:changeset_id])
+      @deployment.description = @reference.comments
+      @deployment.changeset = @reference
+    end
+
+    this_order = DeploymentWorkflow.find(params[:workflow_id]).order - 1;
+    @promotion = DeploymentWorkflow.find_by_project_id(@project.id, :conditions => "\"deployment_workflows\".\"order\" = #{this_order}")
+    @deployment.workflow_id = @promotion.id
+
+    redirect_to proc { url_for(:controller => 'deployments', :action => 'new', :id => @project, :deployment_object => @deployment, :workflow_id => @promotion.id, :changeset_id => @deployment.changeset.id) } 
+  end
+  
+  def create
+    @deployment = DeploymentObject.new(params[:deployment_object])
+    @deployment.user_id = User.current.id
+    @deployment.status = "Pending"
+    @deployment.save!
+    @deployment.queue_job
     redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project) }
   end
   
