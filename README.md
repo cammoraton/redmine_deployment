@@ -25,4 +25,4 @@ or
 rake jobs:work
 
 The jobs at present are just update status, sleep, update status.  Will be linked in with mcollective-svn for
-remote scm operations.  I'm actually good at that kind of thing, it's just glorified scripting after all.
+remote scm operations
