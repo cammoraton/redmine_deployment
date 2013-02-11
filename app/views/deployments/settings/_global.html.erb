@@ -1,0 +1,45 @@
+<div class="contextual">
+  <p>
+    <%= submit_tag(l(:button_update)) %>
+  </p>
+</div>
+<div id="global_settings">
+<h2><%= l(:label_deploy_settings_global) %></h2>
+<div class="box tabular">
+  <p>
+    <%= label_tag('global_deploy_settings_repository', l(:label_deployment_settings_global_repository)) %>
+    <%= f.select :repository_id, options_for_select(@project.repositories.collect {|s| [s.name, s.id]}, @project.repository.id) %>
+    <em class="info">
+      <%= l(:text_deployment_settings_global_repository) %>
+    </em>
+  </p>
+  <p>
+    <%= label_tag('global_deploy_settings_remote_scm_path', l(:label_deployment_settings_global_remote_scm_path)) %>
+    <%= f.text_field :remote_scm_path %>
+    <em class="info">
+      <%= l(:text_deployment_settings_global_remote_scm_path) %>
+    </em>
+  </p>
+  <p>
+    <%= label_tag('global_deploy_settings_deploy_path)', l(:label_deployment_settings_global_deploy_path)) %>
+    <%= f.text_field :deploy_path %>
+    <em class="info">
+      <%= l(:text_deployment_settings_global_deploy_path) %>
+    </em>
+  </p>
+  <p>
+  	<%= label_tag('global_deploy_settings_default_to_head', l(:label_deployment_settings_global_defaults_to_head))%>
+  	<%= f.check_box :defaults_to_head %>
+  	<em class="info">
+      <%= l(:text_deployment_settings_global_defaults_to_head) %>
+    </em>
+  </p>
+  <p>
+  	<%= label_tag('global_deploy_settings_can_promote_only', l(:label_deployment_settings_global_can_promote_only))%>
+  	<%= f.check_box :can_promote_only %>
+  	<em class="info">
+      <%= l(:text_deployment_settings_global_can_promote_only) %>
+    </em>
+  </p>
+</div>
+</div>

@@ -1,0 +1,17 @@
+<% @targets = environment.deployment_targets %>
+<% unless @targets.empty? %>
+<fieldset id="<%= environment.name %>" class="collapsible">
+  <label onclick="toggleFieldset(this);"><%= environment.name %></legend>
+  <div id="<%= environment.name %>">
+  <% @targets.each do |target| %>
+    <% unless target.is_dummy? %>
+      <%= render :partial => 'deployments/current/target', :locals => { :target => target } %>
+    <% else %>
+      <%= render :partial => 'deployments/current/dummy', :locals => { :target => target } %>
+    <% end %>
+  <% end %>
+  </div>
+</fieldset>
+<% end %>
+
+

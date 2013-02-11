@@ -1,12 +1,13 @@
 module ProjectPatch
   def self.included(base)
     base.class_eval do
-      has_many :deployment_workflows, :dependent => :destroy
+      has_many :deployment_environments, :dependent => :destroy, :order => 'order'
+      has_many :deployment_targets, :through => :deployment_environments
       
-      def has_workflows?
-        return true unless DeploymentWorkflow.find_all_by_project_id(self.id).empty?
-        return false
-      end
+      has_one  :deployment_setting, :dependent => :destroy
+      
+      has_one  :default_environment, :conditions => ["is_default = ?", true]
+      has_one  :default_target, :through => :default_environment, :conditions => ["is_default = ?", true]
     end
   end
 end

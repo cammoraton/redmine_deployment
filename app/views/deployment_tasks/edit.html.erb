@@ -1,0 +1,7 @@
+<%= labelled_form_for @task, :url => {:action => 'update', :id => @project, :environment_id => @environment.id, :target_id => @target.id }, :html => {:method=>:put, :id => 'deployment_task-form', :multipart => true} do |f| %>
+  <%= render :partial => 'deployment_tasks/form', :locals => { :f => f, :action => 'edit' } %>
+<% end %>
+
+<% content_for :header_tags do %>
+  <%= javascript_include_tag 'update_deploy_task_metadata.js', :plugin => "deployment" %>
+<% end %>

@@ -1,0 +1,35 @@
+<%= form_for @settings, :url => {:action => 'settings', :id => @project }, :html => {:method=>:put} do |f| %>
+  <%= render :partial => 'deployments/settings/global', :locals => {:f => f} %>
+<% end %>
+<div class="contextual">
+  <p>
+  	<%= link_to l(:label_deploy_new_environment), url_for(:controller => 'deployment_environments', :action => 'new', :id => @project), :class => 'icon icon-add' %>
+  </p>
+</div>
+<div id="environments">
+<h2><%= l(:label_deploy_settings_environments) %></h2>
+  <% unless @environments.empty? %>
+    <% @environments.each do |environment| %>
+      <div class="contextual">
+        <p>
+          <%= link_to l(:label_deploy_settings_environment_edit), url_for(:controller => 'deployment_environments', :action => 'edit', :id => @project, :environment_id => environment.id )%>
+        <% unless environment.order <= 1 %>
+  	   	  <%= link_to l(:label_deploy_settings_environment_move_up), url_for(:controller => 'deployment_environments', :action => 'move_up', :id => @project, :environment_id => environment.id ) %>
+  	   	<% end %>
+  	    <% unless @environments.last == environment %>
+  	   	  <%= link_to l(:label_deploy_settings_environment_move_down), url_for(:controller => 'deployment_environments', :action => 'move_down', :id => @project, :environment_id => environment.id ) %>
+  	   	<% end %>
+  	   	  <%= link_to l(:label_deploy_settings_environment_destroy), url_for(:controller => 'deployment_environments', :action => 'delete', :id => @project, :environment_id => environment.id )%>
+          <%= link_to l(:label_deploy_settings_environment_new_target), url_for(:controller => 'deployment_targets', :action => 'new', :id => @project, :environment_id => environment.id )%>
+  	   	</p>
+      </div>
+      <div id="<%= environment.name %>">
+        <h3><%= environment.name %></h3>
+        <%= render :partial => 'deployments/settings/environments', :locals => { :environment => environment } %>
+      </div>
+    <% end %>
+  <% else %>  
+    <p class="nodata"><%= l(:text_deploy_no_environments) %></p>
+  <% end %>
+</div>
+

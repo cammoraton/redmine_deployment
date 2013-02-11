@@ -1,0 +1,8 @@
+<%= f.fields_for :metadata do |b| %>
+  <p>
+    <%= b.check_box :create_deployment_object_on_mismatch %>
+  </p>
+  <p>
+    <%= b.check_box :continue_on_mismatch %>
+  </p>
+<% end %>

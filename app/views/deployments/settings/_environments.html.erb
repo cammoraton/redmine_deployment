@@ -1,0 +1,10 @@
+<p class="info"><%= environment.description %></p>
+<% unless environment.deployment_targets.empty? %>
+  <div id="<%= environment.name %>_targets_fieldset">
+    <% environment.deployment_targets.each do |target| %>
+      <%= render :partial => 'deployments/settings/target', :locals => { :target => target, :environment_id => environment.id } %>
+    <% end %>
+  </div>
+<% else %>
+<p class="nodata">No deployment targets configured</p>
+<% end %>

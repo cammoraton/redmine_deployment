@@ -4,14 +4,15 @@ class DeploymentObject < ActiveRecord::Base
   include Redmine::SafeAttributes
   unloadable
   
-  attr_accessor :workflow_id
-  
-  belongs_to :deployment_server
+  belongs_to :deployment_target
   belongs_to :changeset
   
   has_many :issues
+  has_one  :delayed_job
   
-  validates_presence_of :changeset_id, :deployment_server_id
+  validates_presence_of :changeset_id
+  validates_presence_of :deployment_target_id
+  
   safe_attributes 'description',
     'status',
     'created_on',
@@ -26,9 +27,12 @@ class DeploymentObject < ActiveRecord::Base
     
   end
   
-  def workflow_id
-    self.deployment_server.deployment_workflow_id
+  # Sugar
+  def environment_id
+    self.deployment_target.deployment_environment.id
+  end
+  
+  def tasks
+    self.deployment_target.deployment_tasks
   end
 end    
-
-#https://github.com/collectiveidea/delayed_job

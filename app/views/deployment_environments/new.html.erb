@@ -1,0 +1,5 @@
+<h2><%= l(:label_deploy_new_environment) %></h2>
+
+<%= form_for @environment, :url => {:controller => 'deployment_environments', :action => 'create', :id => @project}, :html => {:method=>:put} do |f| %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+<% end %>

@@ -1,0 +1,21 @@
+<div class="contextual">
+  Edit 
+  Delete 
+  <% unless target.is_dummy %>
+  	<%= link_to "New Task", url_for(:controller => 'deployment_tasks', :action => 'new', :id => @project, :environment_id => environment_id, :target_id => target.id) %> 
+  <% end %>
+</div>
+<div id="<%= target.hostname %>">
+<h4><%= target.hostname %></h4> 
+<p class="info"><%= target.description %></p>
+<% unless target.is_dummy %>
+  <% unless target.deployment_tasks.empty? %>
+    <%= render :partial => 'deployments/settings/task', :locals => { :tasks => target.deployment_tasks } %>
+  <% else %>
+    <p class="nodata"><%= l(:text_deploy_no_tasks) %></p>
+  <% end %>
+<% else %> 
+  <p class="nodata"><%= l(:text_deploy_dummy_target) %></p>
+<% end %>
+</div>
+    	

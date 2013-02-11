@@ -1,72 +1,49 @@
 class DeploymentsController < ApplicationController
   unloadable
   
-  before_filter :find_workflows
+
   before_filter :find_project
+  before_filter :find_environments
+  before_filter :find_or_initialize_settings
   before_filter :authorize
 
-  def new
-    if params[:deployment_object]
-      @deployments = DeploymentObject.new(params[:deployment_object])
-    else
-      @deployment = DeploymentObject.new
-      if params[:changeset_id]
-        @deployment.changeset_id = params[:changeset_id]
-      elsif params[:workflow_select]
-        if params[:workflow_select][:changeset_id]
-          @deployment.changeset_id = params[:workflow_select][:changeset_id]
-        end
-      end
-    end
-  end
-
+  include DeploymentsHelper
+  
   def index
+    
   end
-
-  def show
-    @deployment = DeploymentObject.find(params[:deployment_id])
+     
+  def current
+    
   end
   
   def history
-    if params[:server_id]
-      @deployments = DeploymentObject.find_all_by_deployment_server_id(params[:server_id])
-    elsif params[:workflow_id]
-      @deployments = DeploymentWorkflow.find(params[:workflow_id]).deployment_objects
-    else
-      @deployments = DeploymentObject.find_all_by_project_id(@project.id)
-    end
+    
   end
   
   def promote
-    @deployment = DeploymentObject.new
-    if params[:deployment_id]
-      @reference = DeploymentObject.find(params[:deployment_id])
-      @deployment.description = @reference.description
-      @deployment.changeset = @reference.changeset
-    elsif params[:changeset_id]
-      @reference = Changeset.find(params[:changeset_id])
-      @deployment.description = @reference.comments
-      @deployment.changeset = @reference
-    end
-
-    this_order = DeploymentWorkflow.find(params[:workflow_id]).order - 1;
-    @promotion = DeploymentWorkflow.find_by_project_id(@project.id, :conditions => "\"deployment_workflows\".\"order\" = #{this_order}")
-    @deployment.workflow_id = @promotion.id
-
-    redirect_to proc { url_for(:controller => 'deployments', :action => 'new', :id => @project, :deployment_object => @deployment, :workflow_id => @promotion.id, :changeset_id => @deployment.changeset.id) } 
+    
   end
   
-  def create
-    @deployment = DeploymentObject.new(params[:deployment_object])
-    @deployment.user_id = User.current.id
-    @deployment.status = "Pending"
-    @deployment.save!
-    @deployment.queue_job
-    redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project) }
+  def show
+    
+  end
+  
+  def settings
+    unless !params[:deployment_setting]
+      @settings = @project.deployment_setting
+      @new_settings = DeploymentSetting.new(params[:deployment_setting])
+      
+      @settings.repository_id = @new_settings.repository_id unless @new_settings.repository_id.nil?
+      @settings.defaults_to_head = @new_settings.defaults_to_head unless @new_settings.defaults_to_head.nil?
+      @settings.can_promote_only = @new_settings.can_promote_only unless @new_settings.can_promote_only.nil?
+   
+      @settings.save
+    end
+    redirect_to proc{ url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings')}
   end
   
   private
-
   def find_project
     # @project variable must be set before calling the authorize filter
     @project = Project.find(params[:id])
@@ -74,9 +51,22 @@ class DeploymentsController < ApplicationController
     render_404
   end
   
-  def find_workflows
-    @workflow = DeploymentWorkflow.find_all_by_project_id(Project.find(params[:id]).id,  :order => "\"deployment_workflows\".\"order\"")
+  def find_environments
+    @environments = DeploymentEnvironment.find_all_by_project_id(@project.id, :order => "\"deployment_environments\".\"order\"")
   rescue ActiveRecord::RecordNotFound
     render_404
-  end 
+  end
+  
+  def find_or_initialize_settings
+    @settings = @project.deployment_setting ||= DeploymentSetting.new()
+    if @settings.new_record?
+      @settings.project_id = @project.id
+      @settings.repository_id = @project.repository.id unless !@project.repository
+    elsif !@settings.repository_id and @project.repository
+      @settings.repository_id = @project.repository.id
+    end
+    @settings.save
+  rescue ActiveRecord::RecordNotFound
+    render_404 
+  end
 end

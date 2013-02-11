@@ -1,0 +1,39 @@
+<div class="box tabular">
+  <P>
+  	<%= label_tag('deployment_task_label', l(:label_deployment_task_label)) %>
+  	<%= f.text_field :label %>
+  	<em class="info">
+      <%= l(:text_deployment_task_label)%>
+    </em>
+  </p>
+  <p>
+  	<%= label_tag('deployment_task_description', l(:label_deployment_task_description)) %>
+  	<%= f.text_field :description %>
+  	<em class="info">
+      <%= l(:text_deployment_task_description)%>
+    </em>
+  </p>
+  <h4>Options</h4>
+  <p>
+  	<%= label_tag('deployment_task_continue_on_error', l(:label_deployment_task_continue_on_error)) %>
+  	<%= f.check_box :continue_on_error %>
+  	<em class="info">
+      <%= l(:text_deployment_task_continue_on_error)%>
+    </em>
+  </p>
+  <h4>Metadata</h4>
+  <p>
+  	<%= label_tag('deployment_task_task_type', l(:label_deployment_task_type)) %>
+  	<%= f.select :task_type, options_for_select(DeploymentTask::TASK_TYPES.collect {|s| [l("deployment_task_type_#{s}"), s] }, @task.task_type), {:required => true},
+  	  :onchange => "updateTaskFrom('#{escape_javascript url_for(:controller => 'deployment_tasks', :action => action, :id => @project, :environment_id => @environment.id, :target_id => @target.id, :format => 'js')}')" %>
+    <em class="info">
+      <%= l(:text_deployment_task_type)%>
+    </em>
+  </p>
+  <div id="metadata">
+  	<%= render :partial => "deployment_tasks/metadata/#{@task.task_type}", :locals => { :f => f }%>
+  </div>
+</div>
+<p>
+  <%= submit_tag(@task.new_record? ? l(:button_create) : l(:button_save)) %>
+</p>

@@ -64,13 +64,14 @@
 
 <%= textilizable @changeset.comments %>
 
-<% if User.current.allowed_to?(:manage_deployments, @repository.project) %>
+<% if User.current.allowed_to?(:view_deployments, @project) %>
   <%= render :partial => 'related_deployments' %>
 <% end %>
 
 <% if @changeset.issues.visible.any? || User.current.allowed_to?(:manage_related_issues, @repository.project) %>
   <%= render :partial => 'related_issues' %>
 <% end %>
+
 
 <% if User.current.allowed_to?(:browse_repository, @project) %>
 <h3><%= l(:label_attachment_plural) %></h3>

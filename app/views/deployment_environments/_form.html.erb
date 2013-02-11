@@ -1,0 +1,33 @@
+<div class="box tabular">
+	<p>
+	  <%= label_tag('deployment_environment_name', l(:label_deploy_environment_name)) %>
+	  <%= f.text_field :name %>
+	  <em class="info">
+        <%= l(:text_deploy_environment_name)%>
+	  </em>
+    </p>
+    <p>
+      <%= label_tag('deployment_environment_description', l(:label_deploy_environment_description)) %>
+      <%= f.text_field :description %>
+	  <em class="info">
+	   <%= l(:text_deploy_environment_description)%>
+	  </em>
+    </p>
+    <p>
+      <%= label_tag('deployment_environment_description', l(:label_deploy_environment_is_default)) %>
+      <%= f.check_box :is_default %>
+      <em class="info">
+	   <%= l(:text_deploy_environment_is_default)%>
+	  </em>
+    </p>
+    <p>
+      <%= label_tag('deployment_environment_valid_direct_target', l(:label_deploy_environment_valid_direct_target)) %>
+      <%= f.check_box :valid_direct_target %>
+      <em class="info">
+	    <%= l(:text_deploy_environment_valid_direct_target)%>
+	  </em>
+    </p>
+</div>
+<p>
+  <%= submit_tag(@environment.new_record? ? l(:button_create) : l(:button_save)) %>
+</p>

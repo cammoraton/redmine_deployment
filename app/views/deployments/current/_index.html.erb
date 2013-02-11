@@ -1,0 +1,11 @@
+<% unless @environments.empty? %>
+  <% unless @project.deployment_targets.empty? %>
+  <% @environments.each do |env| %>
+    <%= render :partial => "deployments/current/environment", :locals => { :environment => env } %>
+  <% end %>
+  <% else %>
+    <p class="nodata"><%= l(:text_deploy_no_targets) %>
+  <% end %>
+<% else %>
+  <p class="nodata"><%= l(:text_deploy_no_environments)%></p>
+<% end %>

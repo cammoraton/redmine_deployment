@@ -1,0 +1,71 @@
+<div class="box tabular">
+  <h3>General</h3>
+  <p>
+  	<%= label_tag('deployment_target_hostname', l(:label_deployment_target_hostname)) %>
+  	<%= f.text_field :hostname %>
+    <em class="info">
+      <%= l(:text_deployment_target_hostname)%>
+    </em>
+  </p>
+  <p>
+    <%= label_tag('deployment_target_description', l(:label_deployment_target_description)) %>
+    <%= f.text_field :description %>
+    <em class="info">
+      <%= l(:text_deployment_target_description)%>
+    </em>
+  </p>
+  <h3>Repository and Deployment</h3>
+  <p>
+    <%= label_tag('deployment_target_repository', l(:label_deployment_target_repository)) %>
+    <%= f.select :repository_id, options_for_select(@project.repositories.collect {|s| [s.name, s.id]}, @target.repository_id) %>
+    <em class="info">
+      <%= l(:text_deployment_target_repository) %>
+    </em>
+  </p>
+  <p>
+    <%= label_tag('deployment_target_remote_scm_path', l(:label_deployment_target_remote_scm_path)) %>
+    <%= f.text_field :remote_scm_path %>
+    <em class="info">
+      <%= l(:text_deployment_target_remote_scm_path) %>
+    </em>
+  </p>
+  <p>
+    <%= label_tag('deployment_target_deploy_path)', l(:label_deployment_target_deploy_path)) %>
+    <%= f.text_field :deploy_path %>
+    <em class="info">
+      <%= l(:text_deployment_target_deploy_path) %>
+    </em>
+  </p>
+  <p>
+  	<%= label_tag('deployment_inherit_settings', l(:label_deployment_inherit_settings)) %>
+  	<%= f.check_box :inherit_settings %>
+    <em class="info">
+      <%= l(:text_deployment_inherit_settings) %>
+    </em>
+  </p>
+  <h3>Options</h3>
+  <p>
+    <%= label_tag('deployment_target_default', l(:label_deployment_target_default)) %>
+    <%= f.check_box :is_default %>
+    <em class="info">
+  	  <%= l(:text_deployment_target_default)%>
+    </em>
+  </p>
+  <p>
+  	<%= label_tag('deployment_target_comments_required', l(:label_deployment_target_comments_required)) %>
+  	<%= f.check_box :comments_required %>
+    <em class="info">
+      <%= l(:text_deployment_target_comments_required) %>
+    </em>
+  </p>
+  <p>
+  	<%= label_tag('deployment_target_dummy', l(:label_deployment_target_dummy)) %>
+  	<%= f.check_box :is_dummy %>
+    <em class="info">
+      <%= l(:text_deployment_target_dummy) %>
+    </em>
+  </p>
+</div>
+<p>
+  <%= submit_tag(@target.new_record? ? l(:button_create) : l(:button_save)) %>
+</p>

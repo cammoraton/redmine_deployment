@@ -1,19 +1,23 @@
 class DeployJob < Struct.new(:deployment_id)
   def enqueue(job)
     # Called when job is queued
+    deployment = DeploymentObject.find(deployment_id)
+    deployment.status = "Queued"
+    deployment.save!
   end
 
   def before(job)
-    # Called before job is run
+    deployment = DeploymentObject.find(deployment_id)
+    deployment.status = "Running"
+    deployment.save!
   end
 
   def perform
     deployment = DeploymentObject.find(deployment_id)
-    deployment.status = "Running"
-    deployment.save!
-    sleep(20)
-    deployment.status = "OK"
-    deployment.save!
+    @tasks = deployment.tasks
+    @tasks.each do |task|
+      
+    end
   end
   
   def after(job)

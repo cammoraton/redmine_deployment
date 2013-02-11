@@ -4,7 +4,6 @@ require_dependency "issue"
 module IssuePatch
   def self.included(base)
     base.class_eval do
-      belongs_to :milestone # Allow issues to be linked to milestones
       belongs_to :deployment # Allow issues to be linked to deployments
     end
   end

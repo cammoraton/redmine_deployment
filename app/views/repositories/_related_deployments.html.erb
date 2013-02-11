@@ -1,39 +1,23 @@
-<% @workflow  = DeploymentWorkflow.find_all_by_project_id(@project.id) %>
-<% if !@workflow.empty?%>
-<% @deployments = DeploymentObject.find_all_by_changeset_id(@changeset.id) %>
-<div id="related-deployments">
 <div class="contextual">
-    <%= link_to l(:button_add), url_for(:controller => 'deployments', :action => 'new', :id => @project, :changeset_id => @changeset.id, :deploy_type => 'repository') %>
+  <p>New</p>
 </div>
-<h3>Related Deployments</h3>
-<% if !@deployments.empty? %>
-<table class="list">
-  <thead>
-  	<th>Environment</th>
-  	<th>Server</th>
-  	<th>Deploy Date</th>
-  	<th>Author</th>
-  	<th>Comment</th>
-  	<th>Status</th>
-  	<th>Actions</th>
-  </thead>
-  <tbody>
-  <% @deployments.each do |deployment| %>
-    <tr>
-      <td><%= deployment.deployment_server.deployment_workflow.environment %></td>
-      <td><%= deployment.deployment_server.name %></td>
-      <td><%= deployment.created_on %></td>
-      <% user = User.find(deployment.user_id) %>
-      <td><%= user.firstname %> <%= user.lastname %></td>
-      <td><%= deployment.description %></td>
-      <td><%= deployment.status %></td>
-      <td class="buttons">
-      	Redeploy Log
-      </td>	
-    </tr>
-  <% end %>
-<% end %>
-  </tbody>
-</table>
+<div id="related_deployments">
+<h3><%= l(:label_deployment) %></h3>
+<div id="fieldset">
+<fieldset id="test" class="collapsible collapsed">
+  <legend onclick="toggleFieldset(this);">Test</legend>
+  <div style="display:none;">
+    <table class="list">
+      <thead>
+      	<th>Test</th>
+        <th>Test</th>
+        <th>Test</th>
+        <th>Test</th>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+</fieldset>
 </div>
-<% end %>
+</div>

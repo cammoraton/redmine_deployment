@@ -1,0 +1,8 @@
+<%= f.fields_for :metadata do |b| %>
+  <p>
+  	<%= b.text_field :email_address %>
+  </p>
+  <p>
+    <%= b.check_box :only_on_previous_failure %>
+  </p>
+<% end %>

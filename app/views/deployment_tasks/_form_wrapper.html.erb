@@ -1,0 +1,3 @@
+<%= fields_for @task do |f| %>
+  <%= render :partial => "deployment_tasks/metadata/#{@task.task_type}", :locals => { :f => f } %>
+<% end %>

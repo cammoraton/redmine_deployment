@@ -1,18 +1,23 @@
 class CreateDeploymentObjects < ActiveRecord::Migration
   def self.up
     create_table :deployment_objects do |t|
-      t.string :description
+      t.string :comment
       t.string :status
+      t.float  :progress, :default => 0.0, :null => 0.0
+      
+      t.boolean :approved, :default => false, :null => false
+      
       t.timestamp :created_on
       t.timestamp :updated_on
+      
       t.text :log
-      t.references :project
-      t.references :version
+      
       t.references :user
       t.references :issue
-      t.references :milestone
+      
       t.references :changeset
-      t.references :deployment_server
+      
+      t.references :deployment_target
       t.references :delayed_job
     end
   end

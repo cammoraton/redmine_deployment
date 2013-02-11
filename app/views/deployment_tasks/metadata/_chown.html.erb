@@ -1,0 +1,14 @@
+<%= f.fields_for :metadata do |b| %>
+  <p>
+  	<%= b.text_field :relative_path %>
+  </p>
+  <p>
+  	<%= b.text_field :owner %>
+  </p>
+  <p>
+    <%= b.text_field :group %>
+  </p>
+  <p>
+    <%= b.text_field :mode %>
+  </p>
+<% end %>
