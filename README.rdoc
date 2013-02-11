@@ -4,15 +4,21 @@ Prototype for a deployments plugin in redmine, based on remote triggering SCM up
 
 You need to run the delayed job setup stuff and rerun bundle install.
 
-This is fairly basic right now, indexes need to be done, a lot of status updates are done with redirects as opposed
-to ajax, and dummy methods are freakin' everywhere.  Milestones need added and the ui needs re-examined.  It may
-make more sense to have deployments linked to versions.
+Quite a lot still needs done.  Indexes, general cleanup, yada yada.
 
-I still need to add in settings as well, because you may want to force an initial deployment to a default server
-or environment and only promotion.
+To add a deployment task type, do the following:
+Add the new type to the list at the top of app/models/deployment_task.rb
+Add a new partial to app/views/deployment_tasks/metadata
+Add the actual job to lib/deployment/jobs/
+Update config/locales with your labels.
 
-Types need done.  Right now thinking remote scm, capistrano, dummy(static link to a repository), and 
-puppet run trigger.
-
-After types come tiered actions.
+TODO:
+Figure out how exactly to do reconciliation
+Data verification
+Indexes
+Cleanup
+Simplify and streamline the admin UI a bit.
+Figure out how to get the damn tab to remain selected at the top when in a sub-menu
+Consider reworking settings tab to not be loaded with everything else for admins
+Search and filters
 
