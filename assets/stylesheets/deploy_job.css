@@ -1,0 +1,10 @@
+.deploy-progress {
+  position: fixed;
+  width: 50%;
+  top: 30%;
+  left: 25%;
+  background-color: white;
+  -moz-border-radius:    10px;
+  -webkit-border-radius: 10px;
+  border-radius:         10px;
+}

@@ -1,4 +1,5 @@
 <div class="box tabular">
+  <h3>General</h3>
   <P>
   	<%= label_tag('deployment_task_label', l(:label_deployment_task_label)) %>
   	<%= f.text_field :label %>
@@ -13,7 +14,7 @@
       <%= l(:text_deployment_task_description)%>
     </em>
   </p>
-  <h4>Options</h4>
+  <h3>Options</h3>
   <p>
   	<%= label_tag('deployment_task_continue_on_error', l(:label_deployment_task_continue_on_error)) %>
   	<%= f.check_box :continue_on_error %>
@@ -21,7 +22,7 @@
       <%= l(:text_deployment_task_continue_on_error)%>
     </em>
   </p>
-  <h4>Metadata</h4>
+  <h3>Type and Metadata</h3>
   <p>
   	<%= label_tag('deployment_task_task_type', l(:label_deployment_task_type)) %>
   	<%= f.select :task_type, options_for_select(DeploymentTask::TASK_TYPES.collect {|s| [l("deployment_task_type_#{s}"), s] }, @task.task_type), {:required => true},
@@ -31,7 +32,7 @@
     </em>
   </p>
   <div id="metadata">
-  	<%= render :partial => "deployment_tasks/metadata/#{@task.task_type}", :locals => { :f => f }%>
+  	<%= render :partial => "deployment_tasks/metadata/#{@task.task_type}", :locals => { :f => f, :metadata => @task.metadata }%>
   </div>
 </div>
 <p>

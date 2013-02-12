@@ -27,18 +27,22 @@ class DeploymentTasksController < ApplicationController
   
   def create
     @task = DeploymentTask.new(params[:deployment_task])
-    @tasks = DeploymentTask.find_all_by_target_id(@target.id, :order => "\"deployment_tasks\".\"order\"")
-    if @tasks.empty?
+    @task.deployment_target = @target
+    if @target.deployment_tasks.empty?
       @task.order = 1
     else
-      @task.order = @tasks.last.order.to_i + 1
+      @task.order = @target.deployment_tasks.last.order.to_i + 1
     end
-    #@task.save!
+    @task.save!
     redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
   end
   
   def update
-    
+    @task = DeploymentTask.find(params[:task_id])
+    @task.attributes = params[:deployment_task]
+    if @task.save
+      redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    end
   end
   
   def delete

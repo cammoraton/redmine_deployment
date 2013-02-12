@@ -1,8 +1,17 @@
+<p><em class="info"><%= l(:deploy_metadata_notify_tooltip)%></em></p>
 <%= f.fields_for :metadata do |b| %>
   <p>
-  	<%= b.text_field :email_address %>
+  	<%= label_tag('deployment_task_metadata_relative_path', l(:label_deploy_metadata_email_address)) %>
+  	<%= b.text_field :email_address, :value => metadata[:email_address] %>
+  	<em class="info">
+  	  <%= l(:text_deploy_metadata_email_address)%>
+    </em>
   </p>
   <p>
-    <%= b.check_box :only_on_previous_failure %>
+  	<%= label_tag('deployment_task_metadata_relative_path', l(:label_deploy_metadata_only_on_previous_failure)) %>
+    <%= b.check_box :only_on_previous_failure, :value => metadata[:only_on_previous_failure] %>
+    <em class="info">
+  	  <%= l(:text_deploy_metadata_only_on_previous_failure)%>
+    </em>
   </p>
 <% end %>

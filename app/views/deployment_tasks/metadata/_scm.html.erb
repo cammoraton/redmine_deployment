@@ -1,8 +1,17 @@
+<p><em class="info"><%= l(:deploy_metadata_scm_tooltip)%></em></p>
 <%= f.fields_for :metadata do |b| %>
   <p>
-  	<%= b.text_field :owner %>
+  	<%= label_tag('deployment_task_metadata_owner', l(:label_deploy_metadata_scm_owner)) %>
+  	<%= b.text_field :owner, :value => metadata[:owner] %>
+  	<em class="info">
+  	  <%= l(:text_deploy_metadata_scm_owner)%>
+    </em>
   </p>
   <p>
-    <%= b.text_field :group %>
+  	<%= label_tag('deployment_task_metadata_group', l(:label_deploy_metadata_scm_group)) %>
+    <%= b.text_field :group, :value => metadata[:group] %>
+  	<em class="info">
+  	  <%= l(:text_deploy_metadata_scm_group)%>
+    </em>
   </p>
 <% end %>

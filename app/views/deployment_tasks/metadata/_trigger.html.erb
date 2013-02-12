@@ -1,4 +1,9 @@
+<p><em class="info"><%= l(:deploy_metadata_trigger_tooltip)%></em></p>
 <%= f.hidden_field :triggers_deployment, :value => true %>
 <p>
+  <%= label_tag('deployment_task_trigger_id', l(:label_deployment_task_trigger_id)) %>
   <%= f.text_field :trigger_id %>
+  <em class="info">
+  	<%= l(:text_deployment_task_trigger_id)%>
+  </em>
 </p>

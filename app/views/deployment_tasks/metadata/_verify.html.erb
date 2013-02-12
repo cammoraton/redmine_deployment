@@ -1,8 +1,17 @@
+<p><em class="info"><%= l(:deploy_metadata_verify_tooltip)%></em></p>
 <%= f.fields_for :metadata do |b| %>
   <p>
-    <%= b.check_box :create_deployment_object_on_mismatch %>
+  	<%= label_tag('deployment_task_metadata_create_deployment_object_on_mismatch', l(:label_deploy_metadata_create_deployment_object_on_mismatch)) %>
+    <%= b.check_box :create_deployment_object_on_mismatch, :value => metadata[:create_deployment_object_on_mismatch] %>
+  	<em class="info">
+  	  <%= l(:text_deploy_metadata_create_deployment_object_on_mismatch)%>
+    </em>
   </p>
   <p>
-    <%= b.check_box :continue_on_mismatch %>
+  	<%= label_tag('deployment_task_metadata_relative_path', l(:label_deploy_continue_on_mismatch)) %>
+    <%= b.check_box :continue_on_mismatch, :value => metadata[:continue_on_mismatch] %>
+  	<em class="info">
+  	  <%= l(:text_deploy_metadata_continue_on_mismatch)%>
+    </em>
   </p>
 <% end %>

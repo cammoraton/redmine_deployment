@@ -1,4 +1,4 @@
-<h2><%= @target.name %></h2>
+<h2><%= @target.hostname %></h2>
 <%= form_for @target, :url => {:action => 'update', :id => @project, :environment_id => @environment, :target_id => @target}, :html => {:method=>:put} do |f| %>
   <%= render :partial => 'form', :locals => {:f => f} %>
 <% end %>

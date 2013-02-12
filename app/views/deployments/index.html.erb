@@ -1,6 +1,18 @@
 <h2><%=l(:label_deployment)%></h2>
 <% if @project.module_enabled?(:repository) and @project.repository %>
-<%= render_tabs deployment_tabs %>
+  <% if params[:deploy_id] %>
+    <div id="deploy-progress" class="deploy-progress">
+      <%= render :partial => "progress" %>
+    </div>
+  <% end%>
+  <%= render_tabs deployment_tabs %>
 <% else %>
   <p class="nodata">Deployment is linked to SCM, a repository MUST be configured</p>
+<% end %>
+
+<% if params[:deploy_id] %>
+  <% content_for :header_tags do %>
+    <%= stylesheet_link_tag "deploy_job.css", :plugin => "deployment", :media => "screen" %>
+    <%= javascript_include_tag 'deploy_job_update.js', :plugin => "deployment" %>
+  <% end %>
 <% end %>

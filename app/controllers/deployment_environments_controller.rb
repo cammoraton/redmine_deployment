@@ -9,16 +9,18 @@ class DeploymentEnvironmentsController < ApplicationController
     
   def new
     @environment = DeploymentEnvironment.new
+    if @project.deployment_environments.empty?
+      @environment.is_default = true
+    end
   end
   
   def create
     @environment = DeploymentEnvironment.new(params[:deployment_environment])
     @environment.project = @project
-    @orders = DeploymentEnvironment.find_all_by_project_id(@project.id, :order => "\"deployment_environments\".\"order\"")
-    if @orders.empty?
+    if @project.deployment_environments.empty?
       @environment.order = 1
     else
-      @environment.order = @orders.last.order.to_i + 1
+      @environment.order = @project.deployment_environments.last.order.to_i + 1
     end
     @environment.save!
     redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }

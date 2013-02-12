@@ -12,6 +12,7 @@ class DeploymentObject < ActiveRecord::Base
   
   validates_presence_of :changeset_id
   validates_presence_of :deployment_target_id
+  validates_presence_of :description, :if => :requires_comments?
   
   safe_attributes 'description',
     'status',
@@ -28,6 +29,10 @@ class DeploymentObject < ActiveRecord::Base
   end
   
   # Sugar
+  def requires_comments?
+    self.deployment_target.requires_comments?
+  end
+  
   def environment_id
     self.deployment_target.deployment_environment.id
   end

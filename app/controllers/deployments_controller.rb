@@ -10,7 +10,9 @@ class DeploymentsController < ApplicationController
   include DeploymentsHelper
   
   def index
-    
+    if @project.repository
+      @project.repository.fetch_changesets if Setting.autofetch_changesets?
+    end
   end
      
   def current
@@ -26,7 +28,10 @@ class DeploymentsController < ApplicationController
   end
   
   def show
-    
+    respond_to do |format|
+      format.html { redirect_to proc{ url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings', :deploy_id => params[:deploy_id])} }
+      format.js   { render :partial => 'update_progress' }
+    end
   end
   
   def settings

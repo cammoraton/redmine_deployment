@@ -5,14 +5,15 @@ class DeploymentTarget < ActiveRecord::Base
   
   belongs_to :deployment_environment
 
-  has_many :deployment_tasks,   :dependent => :destroy, :order => 'order DESC'
+  has_many :deployment_tasks,   :dependent => :destroy, :order => '"deployment_tasks"."order"'
   has_many :deployment_objects, :dependent => :destroy
     
   validates_uniqueness_of :hostname, :scope => :deployment_environment_id
 
   validates_presence_of  :hostname, :deployment_environment_id
   validates_presence_of  :repository_id, :if => :is_dummy?
-   
+  
+  before_save            :fix_default
   
   safe_attributes 'hostname',
     'description'
@@ -30,4 +31,23 @@ class DeploymentTarget < ActiveRecord::Base
     self.comments_required
   end
   
+  def last_deployment
+    self.deployment_objects.find_by_status('OK', :order => '"deployment_objects"."date"').last
+  end
+  
+  def last_changeset
+    self.last_deployment.changeset
+  end
+  
+  private
+  def fix_default
+    if self.is_default
+      self.deployment_environment.deployment_targets.each do |target|
+        if target.is_default?
+          target.is_default = false
+          target.save!
+        end
+      end
+    end
+  end
 end

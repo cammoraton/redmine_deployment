@@ -1,3 +1,5 @@
+
+
 class DeployJob < Struct.new(:deployment_id)
   def enqueue(job)
     # Called when job is queued

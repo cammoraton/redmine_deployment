@@ -1,5 +1,56 @@
 <% unless target.deployment_objects.empty? %>
-  
+  <% unless target.last_deployment.nil? %>
+    <% object = target.last_deployment %>
+    <% changeset = object.changeset %>
+    <table class="list">
+      <thead>
+       <th>Deployed On</th>
+       <th>Author</th>
+       <th>Comment</th>
+       <% if User.current.allowed_to?(:view_changesets, @project) %>
+       <th>
+       	 Revision
+       </th>
+       <% end %>
+       <% if User.current.allowed_to?(:manage_deployments, @project) %>
+  	   <th>
+  	   	 Actions
+  	   </th>
+  	   <% end %>
+      </thead>
+      <tbody>
+       <tr>
+       	<td>
+       		
+       	</td>
+       	<td>
+       		
+       	</td>
+       	<td>
+       		
+       	</td>
+       	<% if User.current.allowed_to?(:view_changesets, @project) %>
+       	<td>
+       	  <%= changeset.revision %>
+       	</td>
+       	<% end %>
+       	<% if User.current.allowed_to?(:manage_deployments, @project) %>
+       	<td>
+       	  <% next_env = target.deployment_environment.next %>
+  	  	  <% unless next_env.nil? %>
+  	  	  Promote to <%= next_env.name %>
+  	  	  <% end %>
+  	  	</td>
+  	  	<% end %>
+       </tr>
+      </tbody>
+    </table>
+    <% if changeset.issues.visible.any? %>
+      <%= render :partial => 'deployments/current/related_issues', :locals => { :changeset => changeset } %>
+    <% end %>
+  <% else %>
+    <p class="nodata">No successful deployments</p>
+  <% end %>
 <% else %>
-  <p class="nodata">Nothing Deployed</p>
+  <p class="nodata"><%= l(:label_deploy_no_deployments) %></p>
 <% end %>

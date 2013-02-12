@@ -1,1 +1,45 @@
-<p>Dummy into repository</p>
+<% repository = Repository.find_by_id(target.repository_id) %>
+<% changeset = repository.latest_changeset %>
+<% unless changeset.nil? %>
+<table class="list">
+  <thead>
+  	<th>Deployed on</th>
+  	<th>Deployed by</th>
+  	<th>Comment</th>
+  	<% if User.current.allowed_to?(:view_changesets, @project) %>
+  	<th>
+  	  Revision
+    </th>
+    <% end %>
+  	<% if User.current.allowed_to?(:manage_deployments, @project) %>
+  	  <th>Actions</th>
+  	<% end %>
+  </thead>
+  <tbody>
+  	<tr>
+      <td><%= format_time(changeset.committed_on) %></td>
+  	  <td><%= changeset.author %></td>
+  	  <td><%= textilizable changeset.comments %></td>
+  	  <% if User.current.allowed_to?(:view_changesets, @project) %>
+  	  <td>
+  	  	<%= changeset.revision %>
+  	  </td>
+  	  <% end %>
+  	  <% if User.current.allowed_to?(:manage_deployments, @project) %>
+  	  <td>
+  	  	<% next_env = target.deployment_environment.next %>
+  	  	<% unless next_env.nil? %>
+  	  	  Promote to <%= next_env.name %>
+  	  	<% end %>
+  	  </td>
+  	  <% end %>
+  	</tr>
+  </tbody>
+</table>
+<% if changeset.issues.visible.any? %>
+  <%= render :partial => 'deployments/current/related_issues', :locals => { :changeset => changeset } %>
+<% end %>
+<% else %>
+ <p class="nodata">No changesets in repository</p>
+<% end %>
+

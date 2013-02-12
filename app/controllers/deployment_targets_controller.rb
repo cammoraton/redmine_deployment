@@ -11,6 +11,9 @@ class DeploymentTargetsController < ApplicationController
   def new
     @target = DeploymentTarget.new
     @target.repository_id = @settings.repository_id
+    if @environment.deployment_targets.empty?
+      @target.is_default = true
+    end
   end
   
   def edit
@@ -23,12 +26,17 @@ class DeploymentTargetsController < ApplicationController
     if @target.inherit_settings
       @target.repository_id = @settings.repository_id
     end
-    @target.save!
-    redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    if @target.save
+      redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    end
   end
   
   def update
-    
+    @target = DeploymentTarget.find(params[:target_id])
+    @target.attributes = params[:deployment_target]
+    if @target.save
+      redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    end
   end
   
   def delete

@@ -1,11 +1,31 @@
 <table class="list">
   <thead>
-  	<th></th>
+  	<th>Label</th>
+  	<th>Type</th>
+  	<th>Description</th>
+  	<th>Actions</th>
   </thead>
   <tbody>
   	<% tasks.each do |task| %>
   	<tr>
   	 <td>
+  	 	<%= task.label %>
+  	 </td>
+  	 <td>
+  	 	<%= l("deployment_task_type_#{task.task_type}") %>
+  	 </td>
+  	 <td>
+  	 	<%= task.description %>
+  	 </td>
+  	 <td>
+  	   <%= link_to l(:label_deployment_task_edit), url_for(:controller => 'deployment_tasks', :action => 'edit', :id => @project, :environment_id => environment_id, :target_id => target.id, :task_id => task.id) %>
+       <% unless task.order <= 1 %>
+         <%= link_to l(:label_deployment_task_move_up), url_for(:controller => 'deployment_tasks', :action => 'move_up', :id => @project, :environment_id => environment_id, :target_id => target.id, :task_id => task.id) %>
+       <% end %>
+       <% unless tasks.last == task %>
+         <%= link_to l(:label_deployment_task_move_down), url_for(:controller => 'deployment_tasks', :action => 'move_down', :id => @project, :environment_id => environment_id, :target_id => target.id, :task_id => task.id) %>
+       <% end %>
+       <%= link_to l(:label_deployment_task_delete), url_for(:controller => 'deployment_tasks', :action => 'delete', :id => @project, :environment_id => environment_id, :target_id => target.id, :task_id => task.id) %>
   	 </td>
     </tr>
   	<% end %>

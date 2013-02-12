@@ -1,4 +1,4 @@
-<%= labelled_form_for @task, :url => {:action => 'update', :id => @project, :environment_id => @environment.id, :target_id => @target.id }, :html => {:method=>:put, :id => 'deployment_task-form', :multipart => true} do |f| %>
+<%= form_for @task, :url => {:action => 'update', :id => @project, :environment_id => @environment.id, :target_id => @target.id, :task_id => @task.id }, :html => {:method=>:put, :id => 'deployment_task-form', :multipart => true} do |f| %>
   <%= render :partial => 'deployment_tasks/form', :locals => { :f => f, :action => 'edit' } %>
 <% end %>
 

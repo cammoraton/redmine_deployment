@@ -3,7 +3,7 @@ module DeploymentsHelper
   def deployment_tabs
     tabs = [{:name => 'current',  :action => :view_deployments,  :partial => 'deployments/current/index',  :label => :label_deploy_status},
             {:name => 'history',  :action => :view_deployments,  :partial => 'deployments/history/index',  :label => :label_deploy_history},
-            {:name => 'settings', :action => :manage_deployment_settings, :partial => 'deployments/settings/index', :label => :label_deploy_settings}
+            {:name => 'settings', :action => :deployment_administrator, :partial => 'deployments/settings/index', :label => :label_deploy_settings}
            ]
     tabs.select {|tab| User.current.allowed_to?(tab[:action], @project)}
   end

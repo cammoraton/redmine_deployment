@@ -19,6 +19,8 @@ class DeploymentTask < ActiveRecord::Base
   
   validates_presence_of :trigger_id, :if => :is_trigger?
   
+  before_destroy :fix_order
+  
   # Sugar
   def is_trigger?
     self.triggers_deployment
@@ -30,7 +32,7 @@ class DeploymentTask < ActiveRecord::Base
   
    # Move order up / down
   def move_up
-    @task = DeploymentTask.find_by_order(self.order - 1, :conditions => "deployment_target_id = #{self.project_id}")
+    @task = DeploymentTask.find_by_order(self.order - 1, :conditions => "deployment_target_id = #{self.deployment_target_id}")
     start_order = self.order
     unless @task.nil?
       self.order = 0
@@ -43,7 +45,7 @@ class DeploymentTask < ActiveRecord::Base
   end
   
   def move_down
-    @task = DeploymenTask.find_by_order(self.order + 1, :conditions => "deployment_target_id = #{self.project_id}")
+    @task = DeploymenTask.find_by_order(self.order + 1, :conditions => "deployment_target_id = #{self.deployment_target_id}")
     start_order = self.order
     unless @task.nil?
       self.order = 0
@@ -53,5 +55,18 @@ class DeploymentTask < ActiveRecord::Base
     end
     self.order = start_order + 1
     self.save!
+  end
+  
+  private
+  def fix_order
+    start_order = self.order
+    self.order = 0
+    self.save!
+    self.deployment_target.deployment_tasks.each do |task|
+      if task.order >= start_order
+        task.order = task.order - 1
+        task.save!        
+      end
+    end
   end
 end

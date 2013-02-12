@@ -15,6 +15,8 @@ class DeploymentEnvironment < ActiveRecord::Base
   validates_presence_of :order
   validates_presence_of :project_id
   
+  before_save :fix_default
+  before_destroy :fix_order
   
   safe_attributes 'name',
                   'description'
@@ -64,5 +66,32 @@ class DeploymentEnvironment < ActiveRecord::Base
     self.save!
   end
   
+  def next
+    return nil unless self.order > 1
+    DeploymentEnvironment.find_by_order(self.order - 1, :conditions => "project_id = #{self.project_id}")
+  end
+  
   private
+  def fix_default
+    if self.is_default
+      self.project.deployment_environments..each do |env|
+        if env.is_default?
+          env.is_default = false
+          env.save!
+        end
+      end
+    end
+  end
+  
+  def fix_order
+    start_order = self.order
+    self.order = 0
+    self.save!
+    self.project.deployment_environments.each do |env|
+      if env.order >= start_order
+        env.order = env.order - 1
+        env.save!        
+      end
+    end
+  end
 end
