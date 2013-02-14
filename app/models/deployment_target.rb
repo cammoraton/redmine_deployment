@@ -32,7 +32,9 @@ class DeploymentTarget < ActiveRecord::Base
   end
   
   def last_deployment
-    self.deployment_objects.find_by_status('OK', :order => '"deployment_objects"."date"').last
+    objects = self.deployment_objects.find_all_by_status('OK', :order => '"deployment_objects"."created_on"')
+    return nil unless objects
+    objects.last
   end
   
   def last_changeset

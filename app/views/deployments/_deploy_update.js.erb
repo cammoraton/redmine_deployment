@@ -1,0 +1,9 @@
+$(document).ready(function() {
+  setTimeout(function() {
+   	$.ajax({
+	  url:'<%= escape_javascript(url_for(:controller => 'deployments', :action => 'show', :project => @project, :deploy_id => deploy_id)) %>',
+	  type: "post",
+	  data: $('#deploy-progress').serialize(),
+	  global: false
+  })}, 1000);
+});

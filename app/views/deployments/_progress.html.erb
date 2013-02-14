@@ -1,14 +1,45 @@
+<% object = DeploymentObject.find(params[:deploy_id])%>
+<% unless object.status == 'OK' or object.status == 'Failed' 
+   refresh = true 
+end %>
+
+<% if refresh %>
+<script type="text/javascript">
+  <%= render :partial => 'deployments/deploy_update', :formats => [:js], :locals => { :deploy_id => params[:deploy_id] } %>
+</script>
+<% end %>
 <div class="contextual" style="margin-right: 10px;">
-  <p>Close</p>
+  <p><%= toggle_link 'Close', "deploy-progress" %></p>
 </div>
 <div class="box" style="margin: 0px; margin-bottom: 0px; border-top-width: 0px; border-bottom-width:0px -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px;">
-<h3>Deploying <img src="<%=image_path('deploy-progress.gif')%>"></h3>
-<table class="list">
-  <thead>
-  	<th>Current Action</th>
-  </thead>
-  <tbody>
-  	<tr><td>Lorem Ipsum</td></tr>
-  </tbody>
-</table>
+<% if refresh %>
+<img src="/plugin_assets/deployment/images/deploy-progress.gif">
+<% end %>
+<h2 style="margin-top: 0px; margin-bottom: 4px;">
+<center>
+<% if object.queued? %>
+  Deployment Queued
+<% elsif object.running? %>
+  Deploying
+<% else %>
+  Deployed
+<% end %>
+</center>
+</h2>
+<div class="box">
+  <h3>Log</h3>
+  <div class="box logfile_scroll">
+   	<p><%= textilizable object.log %></p>
+  </div>
+  <table class="list">
+	<thead>
+	  <th>Time Elapsed:</th>
+	  <% if refresh %>
+	  <th><%= (Time.now - object.created_on).to_i %> Seconds</th>
+	  <% else %>
+	  <th><%= (object.updated_on - object.created_on).to_i %> Seconds</th>
+	  <% end %>
+	</thead>
+  </table>
+</div>
 </div>

@@ -45,7 +45,7 @@ class DeploymentTask < ActiveRecord::Base
   end
   
   def move_down
-    @task = DeploymenTask.find_by_order(self.order + 1, :conditions => "deployment_target_id = #{self.deployment_target_id}")
+    @task = DeploymentTask.find_by_order(self.order + 1, :conditions => "deployment_target_id = #{self.deployment_target_id}")
     start_order = self.order
     unless @task.nil?
       self.order = 0

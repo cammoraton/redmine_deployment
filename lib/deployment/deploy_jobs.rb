@@ -18,7 +18,9 @@ class DeployJob < Struct.new(:deployment_id)
     deployment = DeploymentObject.find(deployment_id)
     @tasks = deployment.tasks
     @tasks.each do |task|
-      
+      deployment.log_message("Starting #{task.label}")
+      sleep(5)
+      deployment.log_message("Finished #{task.label}")
     end
   end
   
@@ -28,10 +30,16 @@ class DeployJob < Struct.new(:deployment_id)
   
   def success(job)
     # Called on success
+    deployment = DeploymentObject.find(deployment_id)
+    deployment.status = "OK"
+    deployment.save!
   end
   
   def failure
     # Called on failure
+    deployment = DeploymentObject.find(deployment_id)
+    deployment.status = "Failed"
+    deployment.save!
   end
   
   def error(job, exception)

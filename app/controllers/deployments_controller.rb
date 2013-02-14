@@ -10,6 +10,7 @@ class DeploymentsController < ApplicationController
   include DeploymentsHelper
   
   def index
+    @deployment = DeploymentObject.new()
     if @project.repository
       @project.repository.fetch_changesets if Setting.autofetch_changesets?
     end
@@ -23,14 +24,42 @@ class DeploymentsController < ApplicationController
     
   end
   
+  def new
+    @deployment = DeploymentObject.new(params[:deployment_object])
+    @environment = DeploymentEnvironment.find(params[:environment_id])
+  end
+  
+  def create
+    @deployment = DeploymentObject.new(params[:deployment_object])
+    @deployment.user_id = User.current.id
+    if @deployment.save
+      redirect_to proc { url_for(:controller => "deployments", :action => "index", :id => @project, :deploy_id => @deployment.id, :tab => "current") }
+    end
+  end
+  
   def promote
-    
+    @deployment = DeploymentObject.new()    
+    @deployment.changeset_id = params[:changeset_id]
+    @deployment.comment = params[:comment]
+    @deployment.user_id = User.current.id
+    environment = DeploymentEnvironment.find(params[:environment_id])
+    unless !environment
+      if environment.deployment_targets.count > 1
+        @deployment.deployment_target = environment.default_target
+      else
+        @deployment.deployment_target = environment.deployment_targets.first
+      end
+    end
+    if (!params[:comment] and @settings.comments_required) or !@deployment.deployment_target
+      redirect_to proc { url_for(:controller => "deployments", :action => "new", :id => @project, :environment_id => params[:environment_id], :deployment_object => @deployment )}
+    elsif @deployment.save
+      redirect_to proc { url_for(:controller => "deployments", :action => "index", :id => @project, :deploy_id => @deployment.id, :tab => "current") }
+    end
   end
   
   def show
     respond_to do |format|
-      format.html { redirect_to proc{ url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings', :deploy_id => params[:deploy_id])} }
-      format.js   { render :partial => 'update_progress' }
+       format.js   { render :partial => 'update_progress' }
     end
   end
   

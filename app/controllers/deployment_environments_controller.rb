@@ -32,13 +32,10 @@ class DeploymentEnvironmentsController < ApplicationController
   
   def update
     @environment = DeploymentEnvironment.find(params[:environment_id])
-    @new_environment = DeploymentEnvironment.new(params[:deployment_environment])
-    @environment.name = @new_environment.name
-    @environment.description = @new_environment.description
-    @environment.is_default = @new_environment.is_default
-    @environment.valid_direct_target = @new_environment.valid_direct_target
-    @environment.save
-    redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    @environment.attributes = params[:deployment_environment]
+    if @environment.save
+      redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    end
   end
   
   def delete

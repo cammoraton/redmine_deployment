@@ -2,17 +2,32 @@
 <% if @project.module_enabled?(:repository) and @project.repository %>
   <% if params[:deploy_id] %>
     <div id="deploy-progress" class="deploy-progress">
-      <%= render :partial => "progress" %>
+      <%= render :partial => "progress", :locals => { :params => params } %>
     </div>
-  <% end%>
+  <% end %>
+  <% if User.current.allowed_to?(:manage_deployments, @project) %>
+    <% @environments.each do |environment| %>
+      <% next_env = environment.next %>
+      <% unless next_env.nil? %>
+        <% unless next_env.deployment_targets.empty? %>
+          <div id="<%= environment.name %>_deployment_form" class="deploy-popup-form">
+          <div class="box" style="margin: 0px; margin-bottom: 0px; border-top-width: 0px; border-bottom-width:0px -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px;">
+          <%= form_for @deployment, :url => url_for(:controller => 'deployments', :action => 'create', :id => @project), :html => { :id => "#{environment.name}_actual_form" } do |f| %>
+            <%= render :partial => 'deployments/promotion_form', :locals => { :f => f, :deploy_from => environment, :deploy_to => environment.next, :type => "promote" } %>
+          <% end %>
+          </div>
+          </div>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
   <%= render_tabs deployment_tabs %>
 <% else %>
   <p class="nodata">Deployment is linked to SCM, a repository MUST be configured</p>
 <% end %>
 
-<% if params[:deploy_id] %>
-  <% content_for :header_tags do %>
-    <%= stylesheet_link_tag "deploy_job.css", :plugin => "deployment", :media => "screen" %>
-    <%= javascript_include_tag 'deploy_job_update.js', :plugin => "deployment" %>
-  <% end %>
+
+<% content_for :header_tags do %>
+  <%= javascript_include_tag 'promotion_form.js', :plugin => "deployment" %>
+  <%= stylesheet_link_tag "deploy_job.css", :plugin => "deployment", :media => "screen" %>
 <% end %>

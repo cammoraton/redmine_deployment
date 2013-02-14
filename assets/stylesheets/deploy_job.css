@@ -1,10 +1,27 @@
 .deploy-progress {
   position: fixed;
-  width: 50%;
+  width: 30%;
   top: 30%;
-  left: 25%;
+  left: 35%;
   background-color: white;
   -moz-border-radius:    10px;
   -webkit-border-radius: 10px;
   border-radius:         10px;
+}
+
+.deploy-popup-form {
+  position: fixed;
+  display: none;
+  left: 35%;
+  top:  25%;
+  display: none;
+  background-color: #4D4D4D;
+  -moz-border-radius:    10px;
+  -webkit-border-radius: 10px;
+  border-radius:         10px;
+}
+
+.logfile_scroll {
+  height: 100px;
+  overflow-x:auto;
 }

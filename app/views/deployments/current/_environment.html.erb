@@ -1,5 +1,13 @@
 <% targets = environment.deployment_targets %>
 <% unless targets.empty? %>
+<% next_env = environment.next %>
+<% if next_env
+     unless next_env.deployment_targets.empty?
+       can_promote = true
+     else
+       can_promote = false
+     end
+   end %>
 <div id="<%= environment.name %>">
   <h3><%= environment.name %></h3>
   <div id="<%= environment.name %>_targets" style="margin-left: 10px;">
@@ -10,9 +18,9 @@
       <% end %>
     <% end %>
     <% unless target.is_dummy? %>
-      <%= render :partial => 'deployments/current/target', :locals => { :target => target } %>
+      <%= render :partial => 'deployments/current/target', :locals => { :target => target, :this_env => environment, :next_env => next_env, :can_promote => can_promote } %>
     <% else %>
-      <%= render :partial => 'deployments/current/dummy', :locals => { :target => target } %>
+      <%= render :partial => 'deployments/current/dummy', :locals => { :target => target, :this_env => environment, :next_env => next_env, :can_promote => can_promote } %>
     <% end %>
   <% end %>
   </div>

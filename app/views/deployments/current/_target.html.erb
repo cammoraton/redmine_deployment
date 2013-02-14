@@ -21,13 +21,13 @@
       <tbody>
        <tr>
        	<td>
-       		
+          <%= format_time(object.created_on) %>
        	</td>
        	<td>
-       		
+       	  <%= object.user %>	
        	</td>
        	<td>
-       		
+         <%= textilizable object.comment %>
        	</td>
        	<% if User.current.allowed_to?(:view_changesets, @project) %>
        	<td>
@@ -36,9 +36,8 @@
        	<% end %>
        	<% if User.current.allowed_to?(:manage_deployments, @project) %>
        	<td>
-       	  <% next_env = target.deployment_environment.next %>
-  	  	  <% unless next_env.nil? %>
-  	  	  Promote to <%= next_env.name %>
+       	  <% if can_promote %>
+  	  	    <%= link_to "Promote to #{next_env.name}", "#", :onclick => "showAndUpdateForm('#{this_env.name}',\"#{object.comment}\",#{changeset.revision});this.blur(); return false;" %>
   	  	  <% end %>
   	  	</td>
   	  	<% end %>

@@ -39,6 +39,10 @@ class DeploymentEnvironment < ActiveRecord::Base
     return false
   end
   
+  def default_target
+    self.deployment_targets.find_by_is_default(true)
+  end
+  
   # Move order up / down
   def move_up
     @environment = DeploymentEnvironment.find_by_order(self.order - 1, :conditions => "project_id = #{self.project_id}")
