@@ -31,22 +31,23 @@
        	</td>
        	<% if User.current.allowed_to?(:view_changesets, @project) %>
        	<td>
+       	  <% unless changeset.nil? %>
        	  <%= changeset.revision %>
+       	  <% end %>
        	</td>
        	<% end %>
        	<% if User.current.allowed_to?(:manage_deployments, @project) %>
        	<td>
+       	  <% unless changeset.nil? %>
        	  <% if can_promote %>
   	  	    <%= link_to "Promote to #{next_env.name}", "#", :onclick => "showAndUpdateForm('#{this_env.name}',\"#{object.comment}\",#{changeset.revision});this.blur(); return false;" %>
+  	  	  <% end %>
   	  	  <% end %>
   	  	</td>
   	  	<% end %>
        </tr>
       </tbody>
     </table>
-    <% if changeset.issues.visible.any? %>
-      <%= render :partial => 'deployments/current/related_issues', :locals => { :changeset => changeset } %>
-    <% end %>
   <% else %>
     <p class="nodata">No successful deployments</p>
   <% end %>

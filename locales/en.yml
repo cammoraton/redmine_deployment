@@ -1,0 +1,139 @@
+# English strings go here for Rails i18n
+en:
+  label_deployment:             'Deployment'
+  label_deploy_status:          'Status'
+  label_deploy_history:         'History'
+  label_deploy_settings:        'Settings'
+  
+  label_deploy_settings_global: "Global Settings"
+  label_deploy_environment:     'Environments'
+  label_deploy_target:          'Targets'
+  label_deploy_task:            'Tasks'
+  
+  label_deploy_no_deployments: "Not yet deployed"
+  
+  label_deployment_settings_global_repository:        "Associated Repository"
+  label_deployment_settings_global_remote_scm_path:   "Remote Repository Path"
+  label_deployment_settings_global_deploy_path:       "Remote Deployment Path"
+  label_deployment_settings_global_defaults_to_head:  "Default to head of repository"
+  label_deployment_settings_global_can_promote_only:  "Promotion-only workflow"
+  label_deployment_settings_global_approval_required: "Approval Required"
+  
+  label_deploy_settings_environments:           "Deployment Environments and Promotion Path"
+  label_deploy_new_environment:                 "New Environment"
+  label_deploy_settings_environment_move_up:    "Move Up"
+  label_deploy_settings_environment_move_down:  "Move Down"
+  label_deploy_settings_environment_edit:       "Edit"
+  label_deploy_settings_environment_destroy:    "Delete"
+  label_deploy_settings_environment_new_target: "New Target"
+  
+  label_deploy_environment_name:                "Environment Name"
+  label_deploy_environment_description:         "Description"
+  label_deploy_environment_is_default:          "Default Environment"
+  label_deploy_environment_valid_direct_target: "Direct Deployment"
+  
+  label_deploy_target_new:                   "New Deployment Target"
+  label_deploy_target_edit:                  "Edit"
+  label_deploy_target_delete:                "Delete"
+  label_deployment_target_hostname:          "Server hostname or FQDN"
+  label_deployment_target_description:       "Description"
+  label_deployment_target_deploy_path:       "Deployment Path"
+  label_deployment_target_remote_scm_path:   "Repository URL"
+  label_deployment_target_default:           "Default Target for Environment"
+  label_deployment_target_comments_required: "Require comments"
+  label_deployment_target_repository:        "Repository"
+  label_deployment_target_dummy:             "Dummy target"
+  label_deployment_inherit_settings:         "Inherit Settings"
+  
+  label_deployment_task_new:               "New Task"
+  label_deployment_task_edit:              "Edit"
+  label_deployment_task_move_up:           "Move Up"
+  label_deployment_task_move_down:         "Move Down"
+  label_deployment_task_delete:            "Delete"
+  label_deployment_task_label:             "Label"
+  label_deployment_task_description:       "Description"
+  label_deployment_task_type:              "Type of Task"
+  label_deployment_task_continue_on_error: "Continue on error"
+  label_deployment_task_trigger_id:        "Triggers"
+  
+  text_deploy_no_environments:     "No environments configured"
+  text_deploy_no_targets:          "No targets configured"
+  text_deploy_no_tasks:            "No tasks configured"
+  text_deploy_dummy_target:        "Dummy target"
+  text_deploy_no_deployments:      "Not yet deployed"
+  text_deployment_no_repositories: "No repositories configured, you need to configure a repository for the project to use deployment"
+  
+  text_deployment_settings_global_repository:        "Repository to deploy from.  Determines the repository a dummy target will point to and the default repository used for deployment from the status screen"
+  text_deployment_settings_global_remote_scm_path:   "If the path for a remote server to the above repository is different put it here.  If empty, will use the same path as the above repository"
+  text_deployment_settings_global_deploy_path:       "Path to deploy this to on remote server.  May be overriden on a project by project basis.  Defaults to defering to remote config."
+  text_deployment_settings_global_defaults_to_head:  "If enabled then deployment from the status tab will not display a changeset selection, it will deploy from the latest changeset"
+  text_deployment_settings_global_can_promote_only:  "If enabled then the only available deployment target will be the default target in the default environment.  Users will not be prompted for a target."
+  text_deployment_settings_global_approval_required: "If enabled then all deployments must be approved before they can be promoted."
+
+  text_deploy_environment_name:                "Name of environment.  Must be unique per project."
+  text_deploy_environment_description:         "A description of the environment.  Will be inserted under the environment name in relevant dialogs."
+  text_deploy_environment_valid_direct_target: "If checked, allows deployment directly into this environment"
+  text_deploy_environment_is_default:          "If checked this will be the default environment for deployment.  Setting does not effect promotion."
+
+  text_deployment_target_hostname:          "Will be passed to tasks for connection purposes"
+  text_deployment_target_description:       "Friendly description of target"
+  text_deployment_target_default:           "Is this the default target for the environment?"
+  text_deployment_target_comments_required: "Require comments for deployments to this target"
+  text_deployment_target_dummy:             "Disable direct deployment and treat as if the head of the default repository is currently deployed for promotion purposes"
+  text_deployment_inherit_settings:         "If checked uses the current global settings.  If not uses whatever is configured here"
+  text_deployment_target_repository:        "If not inherited, use this repository"
+  text_deployment_target_remote_scm_path:   "If not inherited, use this path to the repository(if it will differ from the above)"
+  text_deployment_target_deploy_path:       "If not inherited, use this path to deploy to."
+
+  text_deployment_task_label:             "Short name of task - used in displaying tasks and logs"
+  text_deployment_task_description:       "Longer description of task - used in displaying tasks and logs"
+  text_deployment_task_type:              ""
+  text_deployment_task_continue_on_error: "If an error is thrown, log it and plow ahead anyway"
+  text_deployment_task_trigger_id:        "Id of the deployment to trigger"
+
+  # Tasks
+  deployment_task_type_cap:     "Capistrano"
+  deployment_task_type_chown:   "Modify Permissions"
+  deployment_task_type_hudson:  "Hudson/Jenkins"
+  deployment_task_type_notify:  "Notify"
+  deployment_task_type_scm:     "Remote Checkout"
+  deployment_task_type_trigger: "Trigger Deployment"
+  deployment_task_type_verify:  "Verify"
+
+  # Tooltips
+  deploy_metadata_cap_tooltip:     "The capistrano task type issues the checkout on the deployment server and then runs the deployment via a capfile included in that checkout"
+  deploy_metadata_chown_tooltip:   "Selectively change ownership, group and mode.  This allows you to for instance to fix permissions so a directory can be used for uploads"
+  deploy_metadata_hudson_tooltip:  "Runs a hudson or jenkins job"
+  deploy_metadata_notify_tooltip:  "The notify task type gives granularity to notifications.  Instead of notifying at conclusion or on error, this allows you to selectively notify at each step"
+  deploy_metadata_scm_tooltip:     "The remote checkout task type is what actually issues a remote checkout.  This should probably be included in every non-capistrano deployment"
+  deploy_metadata_trigger_tooltip: "Trigger a deployment on another target"
+  deploy_metadata_verify_tooltip:  "Run the periodic reconciliation/verification job"
+  
+  # Labels
+  label_deploy_metadata_relative_path: "Relative path" 
+  label_deploy_metadata_owner:         "Owner"
+  label_deploy_metadata_group:         "Group"
+  label_deploy_metadata_recursive:     "Recursive"
+  label_deploy_metadata_scm_owner:     "Owner"
+  label_deploy_metadata_scm_group:     "Group"
+  label_deploy_metadata_mode:          "Mode"
+  label_deploy_metadata_capfile_path:  "Path to capfile"
+  label_deploy_metadata_email_address: "Email Address(es)"
+  label_deploy_metadata_only_on_previous_failure: "On Failure"
+  label_deploy_metadata_create_deployment_object_on_mismatch: ""
+  label_deploy_metadata_continue_on_mismatch: ""
+  
+  # Text infos
+  text_deploy_metadata_relative_path:  "Path relative to deployed path to modify"
+  text_deploy_metadata_recursive:      "Recursively modify the path"
+  text_deploy_metadata_owner:          "Owner/uid to pass to chown"
+  text_deploy_metadata_group:          "Group/gid to pass to chgrp"
+  text_deploy_metadata_scm_owner:      "Who should own the checked-out copy"
+  text_deploy_metadata_scm_group:      "Group that should own the checked-out copy"
+  text_deploy_metadata_mode:           "Posix mode to pass to chmod"
+  text_deploy_metadata_capfile_path:   "Relative path to capfile within repository"
+  text_deploy_metadata_email_address:  "Comma delimited list of email address to mail"
+  text_deploy_metadata_only_on_previous_failure: "Only notify if a previous job failed"
+  text_deploy_metadata_create_deployment_object_on_mismatch: ""
+  text_deploy_metadata_continue_on_mismatch: ""
+ 

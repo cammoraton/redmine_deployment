@@ -9,7 +9,11 @@ end %>
 </script>
 <% end %>
 <div class="contextual" style="margin-right: 10px;">
+  <% if refresh %>
   <p><%= toggle_link 'Close', "deploy-progress" %></p>
+  <% else %>
+    <%= link_to 'Close and Refresh', url_for(:controller => 'deployments', :action => 'index', :id => @project)%>
+  <% end %>
 </div>
 <div class="box" style="margin: 0px; margin-bottom: 0px; border-top-width: 0px; border-bottom-width:0px -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px;">
 <% if refresh %>
