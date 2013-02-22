@@ -6,6 +6,7 @@ class DeploymentEnvironment < ActiveRecord::Base
   belongs_to :project
   has_many :deployment_targets, :dependent => :destroy
   has_many :deployment_objects, :through => :deployment_targets
+  has_one  :deployment_setting, :through => :project
   #before_delete :fix_order
   #Need to do an is_default fix
   

@@ -5,6 +5,8 @@ class DeploymentTarget < ActiveRecord::Base
   
   belongs_to :deployment_environment
 
+  has_one :deployment_setting, :through => :deployment_environment
+
   has_many :deployment_tasks,   :dependent => :destroy, :order => '"deployment_tasks"."order"'
   has_many :deployment_objects, :dependent => :destroy
     
@@ -39,6 +41,20 @@ class DeploymentTarget < ActiveRecord::Base
   
   def last_changeset
     self.last_deployment.changeset
+  end
+  
+  def remote_uri
+    unless self.inherit_settings
+      return self.remote_scm_path
+    end
+    self.deployment_setting.remote_scm_path
+  end
+  
+  def deployment_path
+    unless self.inherit_settings
+      return self.deploy_path
+    end
+    self.deployment_setting.deploy_path
   end
   
   private

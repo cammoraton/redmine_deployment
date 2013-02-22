@@ -40,7 +40,7 @@
        	<td>
        	  <% unless changeset.nil? %>
        	  <% if can_promote %>
-  	  	    <%= link_to "Promote to #{next_env.name}", "#", :onclick => "showAndUpdateForm('#{this_env.name}',\"#{object.comment}\",#{changeset.revision});this.blur(); return false;" %>
+  	  	    <%= link_to "Promote to #{next_env.name}", "#", :onclick => "showAndUpdateForm('#{this_env.name}',\"#{object.comment}\",#{changeset.id});this.blur(); return false;" %>
   	  	  <% end %>
   	  	  <% end %>
   	  	</td>

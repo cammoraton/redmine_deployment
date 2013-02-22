@@ -8,6 +8,8 @@ end %>
   <%= render :partial => 'deployments/deploy_update', :formats => [:js], :locals => { :deploy_id => params[:deploy_id] } %>
 </script>
 <% end %>
+
+<div class="box" style="margin: 0px; margin-bottom: 0px; border-top-width: 0px; border-bottom-width:0px -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px;">
 <div class="contextual" style="margin-right: 10px;">
   <% if refresh %>
   <p><%= toggle_link 'Close', "deploy-progress" %></p>
@@ -15,11 +17,12 @@ end %>
     <%= link_to 'Close and Refresh', url_for(:controller => 'deployments', :action => 'index', :id => @project)%>
   <% end %>
 </div>
-<div class="box" style="margin: 0px; margin-bottom: 0px; border-top-width: 0px; border-bottom-width:0px -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px;">
+<div>
 <% if refresh %>
 <img src="/plugin_assets/deployment/images/deploy-progress.gif">
 <% end %>
 <h2 style="margin-top: 0px; margin-bottom: 4px;">
+</div>
 <center>
 <% if object.queued? %>
   Deployment Queued

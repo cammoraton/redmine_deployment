@@ -37,12 +37,7 @@ class DeploymentsController < ApplicationController
   def settings
     unless !params[:deployment_setting]
       @settings = @project.deployment_setting
-      @new_settings = DeploymentSetting.new(params[:deployment_setting])
-      
-      @settings.repository_id = @new_settings.repository_id unless @new_settings.repository_id.nil?
-      @settings.defaults_to_head = @new_settings.defaults_to_head unless @new_settings.defaults_to_head.nil?
-      @settings.can_promote_only = @new_settings.can_promote_only unless @new_settings.can_promote_only.nil?
-   
+      @settings.attributes = params[:deployment_setting]
       @settings.save
     end
     redirect_to proc{ url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings')}

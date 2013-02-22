@@ -59,6 +59,20 @@ class DeploymentObject < ActiveRecord::Base
     self.save!
   end
   
+  def last_revision
+    last_deployment = self.deployment_target.last_deployment
+    unless last_deployment.nil?
+      changeset = last_deployment.changeset
+      unless changeset.nil?
+        revision = changeset.revision
+        unless revision.nil?
+          return revision
+        end  
+      end
+    end
+    nil
+  end
+  
   private
   def queue_job
     Delayed::Job.enqueue DeployJob.new(self.id), :queue => self.deployment_target.hostname, :attempts => 5
