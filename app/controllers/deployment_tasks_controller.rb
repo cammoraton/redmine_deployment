@@ -23,6 +23,13 @@ class DeploymentTasksController < ApplicationController
   
   def edit
     @task = DeploymentTask.find(params[:task_id])
+    if params[:deployment_task]
+      @task.attributes = params[:deployment_task]
+    end
+    respond_to do |format|
+      format.html { render :action => 'edit' }
+      format.js { render :partial => 'update_form' }
+    end
   end
   
   def create
@@ -33,8 +40,9 @@ class DeploymentTasksController < ApplicationController
     else
       @task.order = @target.deployment_tasks.last.order.to_i + 1
     end
-    @task.save!
-    redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    if @task.save
+      redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    end
   end
   
   def update

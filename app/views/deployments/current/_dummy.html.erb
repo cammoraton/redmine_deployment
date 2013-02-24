@@ -3,8 +3,8 @@
 <% unless changeset.nil? %>
 <table class="list">
   <thead>
-  	<th>Deployed on</th>
-  	<th>Deployed by</th>
+  	<th>Commited on</th>
+  	<th>Commited by</th>
   	<th>Comment</th>
   	<% if User.current.allowed_to?(:view_changesets, @project) %>
   	<th>

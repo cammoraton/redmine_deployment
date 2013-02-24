@@ -1,0 +1,8 @@
+MCollective Agents
+To be installed on targets (generally in /usr/libexec/mcollective/mcollective/agents)
+
+The latest for any custom agents located here will generally be on my github
+(I need to put a webpage together for this)
+
+I'm not bundling the puppetd agent as it's not mine.  I should ask R.I. Plienar if he minds if I do at a
+later date.

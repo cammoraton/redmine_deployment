@@ -1,0 +1,10 @@
+<p><em class="info"><%= l(:deploy_metadata_capistrano_tooltip)%></em></p>
+<%= f.fields_for :metadata do |b| %>
+  <p>
+  	<%= label_tag('deployment_task_metadata_capfile_path', l(:label_deploy_metadata_capfile_path)) %>
+  	<%= b.text_field :capfile_path, :value => metadata[:capfile_path] %>
+  	<em class="info">
+  	 <%= l(:text_deploy_metadata_capfile_path)%>
+    </em>
+  </p>
+<% end %>

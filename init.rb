@@ -10,12 +10,14 @@ require_dependency 'deployment/repository_patch'
 require_dependency 'deployment/deploy_jobs'
 
 Redmine::Plugin.register :deployment do
-  name 'TERC Deployment plugin'
+  name 'Deployment plugin'
   author 'Nick Cammorato'
   description 'This plugin provides a deployment framework'
-  version '0.1.0'
-    
-  requires_redmine :version_or_higher => '2.2.1'
+  version '0.5'
+  
+  # Have only tested this on 2.2.x so if you want to try it
+  # Just comment this out
+  requires_redmine :version_or_higher => '2.2.0'
 
   # Add in the deployments menu
   menu :project_menu, :deployments, { :controller => :deployments, :action => :index }, :after => :roadmap, :param => :id, :caption => :label_deployment,

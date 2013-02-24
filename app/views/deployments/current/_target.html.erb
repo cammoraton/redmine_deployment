@@ -43,6 +43,13 @@
   	  	    <%= link_to "Promote to #{next_env.name}", "#", :onclick => "showAndUpdateForm('#{this_env.name}',\"#{object.comment}\",#{changeset.id});this.blur(); return false;" %>
   	  	  <% end %>
   	  	  <% end %>
+  	  	  <% unless target.free? %>
+  	  	    <% if deploying == target.id %>
+  	  	      <%= toggle_link 'Show current', "deploy-progress" %>
+            <% else %>
+               View Current Deployment
+  	  	    <% end %>
+  	  	  <% end %>
   	  	</td>
   	  	<% end %>
        </tr>

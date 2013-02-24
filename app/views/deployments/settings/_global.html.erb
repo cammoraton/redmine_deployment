@@ -14,6 +14,13 @@
     </em>
   </p>
   <p>
+  	<%= label_tag('deployment_transport_type', l(:label_deployment_transport_type)) %>
+  	<%= f.select :transport_type, options_for_select(DeploymentSetting::TRANSPORT_TYPES.collect {|s| [l("deployment_transport_type_#{s}"), s] }, @settings.transport_type), {:required => true} %>
+    <em class="info">
+      <%= l(:text_deployment_transport_type)%>
+    </em>
+  </p>
+  <p>
     <%= label_tag('global_deploy_settings_remote_scm_path', l(:label_deployment_settings_global_remote_scm_path)) %>
     <%= f.text_field :remote_scm_path %>
     <em class="info">
@@ -27,6 +34,7 @@
       <%= l(:text_deployment_settings_global_deploy_path) %>
     </em>
   </p>
+
   <p>
   	<%= label_tag('global_deploy_settings_default_to_head', l(:label_deployment_settings_global_defaults_to_head))%>
   	<%= f.check_box :defaults_to_head %>

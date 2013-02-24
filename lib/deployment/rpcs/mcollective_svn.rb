@@ -38,27 +38,29 @@ module DeploymentRPC
   
     def update(current_revision, uri, revision)
       # Return checkout if no current_revision
-      puts @current_revision, @current_uri
       return checkout(uri,revision) if @current_revision.nil?
+      
+      # The view should've caught this, but double check.
+      if @current_revision == revision
+        raise MCollectiveSVNException, "Nothing to do" 
+      end
       
       # Check that the expected equals what we have
       if current_revision != @current_revision
         update_info  # Update the information on a mismatch
         if current_revision != @current_revision  # Recheck it
           # Raise an exception
-          raise MCollectiveSVNException, "Remote revision has unexpected value after recheck - #{current_revision} != #{@current_revision}"
+          raise MCollectiveSVNException, "Remote revision does not match expected revision, manual intervention required, to bring back into sync update remote copy to Revision \##{current_revision}"
         end
       end
 
       # TODO: We should massage the uris more       
       # If the uri doesn't match, then the repository has changed and we should do a fresh checkout
       if uri.chomp('/') != @current_uri.chomp('/')
-        puts "#{uri} / #{@current_uri}"
         checkout(uri,revision)
       else
         # Otherwise do the update
         @client.update(:path => @path, :revision => revision) do |resp|
-          puts resp[:body][:data]
           if resp[:senderid] != @node
             # raise exception
             raise MCollectiveSVNException, "Senderid/node mismatch - #{@node} != #{resp[:senderid]}"
@@ -78,7 +80,7 @@ module DeploymentRPC
       end
     end
   
-    def checkout(uri, revision)
+    def checkout(uri, revision, clear = false)
       # We always force an update
       
       ttl = @client.ttl
@@ -87,7 +89,7 @@ module DeploymentRPC
       if ttl < 300
         @client.ttl = 300
       end
-      @client.checkout(:path => @path, :revision => revision, :uri => uri) do |resp|
+      @client.checkout(:path => @path, :revision => revision, :uri => uri, :clear => clear) do |resp|
         puts resp[:body][:data]
         if resp[:senderid] != @node
           # raise exception
@@ -105,7 +107,6 @@ module DeploymentRPC
       @current_revision = nil
       @current_uri = nil
       @client.info(:path => @path) do |resp|
-        puts resp[:body][:data]
         if resp[:senderid] != @node
           # raise exception
           raise MCollectiveSVNException, "Senderid/node mismatch on response - #{@node} != #{resp[:senderid]}"

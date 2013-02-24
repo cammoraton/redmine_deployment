@@ -10,7 +10,7 @@ class DeploymentObject < ActiveRecord::Base
   belongs_to :user
   
   has_many :issues
-  has_one  :delayed_job
+  belongs_to  :delayed_job
   
   validates_presence_of :changeset_id
   validates_presence_of :deployment_target_id
@@ -46,7 +46,28 @@ class DeploymentObject < ActiveRecord::Base
   end
   
   def running?
-    return true unless self.status == "OK" or self.status == "Failed" 
+    return true if self.status == "Running"
+  end
+  
+  def failed?
+    return true if self.status == "Failed"
+  end
+  
+  def queue
+    self.status = "Queued"
+    self.save!
+  end
+  
+  def run(job_id)
+    self.status = "Running"
+    self.delayed_job_id = job_id
+    self.save!
+  end
+  
+  def fail
+    self.status = "Failed"
+    self.save!
+    destroy_job
   end
   
   def log_message(message)
@@ -72,9 +93,22 @@ class DeploymentObject < ActiveRecord::Base
     end
     nil
   end
+     
+  def other_deployments
+    self.deployment_target.deployment_objects.find(:all, 
+                              :conditions => "status = 'Running' or status = 'Queued'",
+                              :order => "\"deployment_objects\".\"created_on\"")
+  end
   
   private
   def queue_job
     Delayed::Job.enqueue DeployJob.new(self.id), :queue => self.deployment_target.hostname, :attempts => 5
+  end
+  
+  def destroy_job
+    unless self.delayed_job_id.nil?
+      job = Delayed::Job.find_by_id(self.delayed_job_id)
+      job.destroy
+    end
   end
 end    

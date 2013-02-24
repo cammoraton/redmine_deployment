@@ -1,0 +1,38 @@
+<p><em class="info"><%= l(:deploy_metadata_permissions_tooltip)%></em></p>
+<%= f.fields_for :metadata do |b| %>
+  <p>
+  	<%= label_tag('deployment_task_metadata_relative_path', l(:label_deploy_metadata_relative_path)) %>
+  	<%= b.text_field :relative_path, :value => metadata[:relative_path] %>
+  	<em class="info">
+  	 <%= l(:text_deploy_metadata_relative_path)%>
+    </em>
+  </p>
+  <p>
+  	<%= label_tag('deployment_task_metadata_recursive', l(:label_deploy_metadata_recursive)) %>
+  	<%= b.check_box  :recursive, :value => metadata[:recursive] %>
+  	<em class="info">
+  	 <%= l(:text_deploy_metadata_recursive)%>
+    </em>
+  </p>
+  <p> 	
+  	<%= label_tag('deployment_task_metadata_owner', l(:label_deploy_metadata_owner)) %>
+  	<%= b.text_field :owner, :value => metadata[:owner] %>
+  	<em class="info">
+  	 <%= l(:text_deploy_metadata_owner)%>
+    </em>
+  </p>
+  <p> 	
+  	<%= label_tag('deployment_task_metadata_group', l(:label_deploy_metadata_group)) %>
+    <%= b.text_field :group, :value => metadata[:group] %>
+    <em class="info">
+  	 <%= l(:text_deploy_metadata_group)%>
+    </em>
+  </p>
+  <p> 	
+  	<%= label_tag('deployment_task_metadata_mode', l(:label_deploy_metadata_mode)) %>
+    <%= b.text_field :mode, :value => metadata[:mode] %>
+    <em class="info">
+  	 <%= l(:text_deploy_metadata_mode)%>
+    </em>
+  </p>
+<% end %>

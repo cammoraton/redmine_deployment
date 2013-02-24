@@ -2,10 +2,12 @@
 <% unless targets.empty? %>
 <% next_env = environment.next %>
 <% if next_env
-     unless next_env.deployment_targets.empty?
-       can_promote = true
-     else
+	 if next_env.deployment_targets.empty?
+	   can_promote = false
+     elsif ! next_env.free_targets?
        can_promote = false
+     else
+       can_promote = true
      end
    end %>
 <div id="<%= environment.name %>">
@@ -18,9 +20,9 @@
       <% end %>
     <% end %>
     <% unless target.is_dummy? %>
-      <%= render :partial => 'deployments/current/target', :locals => { :target => target, :this_env => environment, :next_env => next_env, :can_promote => can_promote } %>
+      <%= render :partial => 'deployments/current/target', :locals => { :target => target, :this_env => environment, :next_env => next_env, :can_promote => can_promote, :deploying => deploying } %>
     <% else %>
-      <%= render :partial => 'deployments/current/dummy', :locals => { :target => target, :this_env => environment, :next_env => next_env, :can_promote => can_promote } %>
+      <%= render :partial => 'deployments/current/dummy', :locals => { :target => target, :this_env => environment, :next_env => next_env, :can_promote => can_promote, :deploying => deploying } %>
     <% end %>
   <% end %>
   </div>

@@ -25,8 +25,13 @@
   <h3>Type and Metadata</h3>
   <p>
   	<%= label_tag('deployment_task_task_type', l(:label_deployment_task_type)) %>
+  	<% if action == 'edit' %>
+  	<%= f.select :task_type, options_for_select(DeploymentTask::TASK_TYPES.collect {|s| [l("deployment_task_type_#{s}"), s] }, @task.task_type), {:required => true},
+  	  :onchange => "updateTaskFrom('#{escape_javascript url_for(:controller => 'deployment_tasks', :action => action, :id => @project, :environment_id => @environment.id, :target_id => @target.id, :task_id => @task.id, :format => 'js')}')" %>
+  	<% else %>
   	<%= f.select :task_type, options_for_select(DeploymentTask::TASK_TYPES.collect {|s| [l("deployment_task_type_#{s}"), s] }, @task.task_type), {:required => true},
   	  :onchange => "updateTaskFrom('#{escape_javascript url_for(:controller => 'deployment_tasks', :action => action, :id => @project, :environment_id => @environment.id, :target_id => @target.id, :format => 'js')}')" %>
+  	<% end %>
     <em class="info">
       <%= l(:text_deployment_task_type)%>
     </em>

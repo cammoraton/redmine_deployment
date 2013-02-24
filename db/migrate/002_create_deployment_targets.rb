@@ -13,6 +13,7 @@ class CreateDeploymentTargets < ActiveRecord::Migration
       t.boolean :comments_required, :default => true, :null => true
       # Inherit global settings
       t.boolean :inherit_settings, :default => true, :null => true
+      t.boolean :atomize_tasks, :default => false, :null => false
 
       # We belong to an environment
       t.references :deployment_environment      
@@ -20,6 +21,7 @@ class CreateDeploymentTargets < ActiveRecord::Migration
       # We may override global settings
       t.string :remote_scm_path
       t.string :deploy_path
+      t.string :transport_type
       
       # We MAY reference a repository
       t.references :repository

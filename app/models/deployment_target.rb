@@ -2,7 +2,7 @@ class DeploymentTarget < ActiveRecord::Base
   include Redmine::SafeAttributes
 
   unloadable
-  
+
   belongs_to :deployment_environment
 
   has_one :deployment_setting, :through => :deployment_environment
@@ -27,6 +27,12 @@ class DeploymentTarget < ActiveRecord::Base
   
   def is_default?
     self.is_default
+  end
+  
+  def free?
+    return false if self.deployment_objects.find_by_status('Running')
+    return false if self.deployment_objects.find_by_status('Queued')
+    return true
   end
   
   def requires_comments?

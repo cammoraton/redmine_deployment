@@ -23,6 +23,13 @@
     </em>
   </p>
   <p>
+  	<%= label_tag('deployment_task_transport_type', l(:label_deployment_transport_type)) %>
+  	<%= f.select :transport_type, options_for_select(DeploymentSetting::TRANSPORT_TYPES.collect {|s| [l("deployment_transport_type_#{s}"), s] }, @target.transport_type), {:required => true} %>
+    <em class="info">
+      <%= l(:text_deployment_transport_type)%>
+    </em>
+  </p>
+  <p>
     <%= label_tag('deployment_target_remote_scm_path', l(:label_deployment_target_remote_scm_path)) %>
     <%= f.text_field :remote_scm_path %>
     <em class="info">
@@ -37,6 +44,13 @@
     </em>
   </p>
   <p>
+  	<%= label_tag('deployment_target_atomize_tasks', l(:label_deployment_atomize_tasks)) %>
+  	<%= f.check_box :atomize_tasks %>
+    <em class="info">
+      <%= l(:text_deployment_atomize_tasks) %>
+    </em>
+  </p>
+  <p>
   	<%= label_tag('deployment_inherit_settings', l(:label_deployment_inherit_settings)) %>
   	<%= f.check_box :inherit_settings %>
     <em class="info">
@@ -44,6 +58,7 @@
     </em>
   </p>
   <h3>Options</h3>
+
   <p>
     <%= label_tag('deployment_target_default', l(:label_deployment_target_default)) %>
     <%= f.check_box :is_default %>

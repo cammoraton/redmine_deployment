@@ -3,7 +3,7 @@ class DeploymentTask < ActiveRecord::Base
 
   unloadable
 
-  TASK_TYPES = %w(scm cap chown notify verify)
+  TASK_TYPES = %w(scm capistrano permissions notify verify trigger puppet)
 
   belongs_to :deployment_target
   

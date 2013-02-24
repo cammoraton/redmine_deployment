@@ -40,6 +40,13 @@ class DeploymentEnvironment < ActiveRecord::Base
     return false
   end
   
+  def free_targets?
+    self.deployment_targets.each do |target|
+      return true if target.free?
+    end
+    return false
+  end
+  
   def default_target
     self.deployment_targets.find_by_is_default(true)
   end
@@ -79,7 +86,7 @@ class DeploymentEnvironment < ActiveRecord::Base
   private
   def fix_default
     if self.is_default
-      self.project.deployment_environments..each do |env|
+      self.project.deployment_environments.each do |env|
         if env.is_default?
           env.is_default = false
           env.save!

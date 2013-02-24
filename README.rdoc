@@ -18,9 +18,15 @@ Data verification
 Indexes
 Cleanup
 Simplify and streamline the admin UI a bit.
+YAML import/export for settings.
 Figure out how to get the damn tab to remain selected at the top when in a sub-menu
 Consider reworking settings tab to not be loaded with everything else for admins
 Search and filters
 
 Add rake task to generate client certs for mcollective
 Add rake task to generate pub/private keys for ssh
+
+Need to modify the agents to allow you configure allowed paths to lock it down further
+Need a way to lock a deployment to a version
+
+RC2:

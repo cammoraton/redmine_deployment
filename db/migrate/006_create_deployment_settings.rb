@@ -4,9 +4,11 @@ class CreateDeploymentSettings < ActiveRecord::Migration
       t.boolean    :defaults_to_head, :default => true, :null => false
       t.boolean    :can_promote_only, :default => false, :null => false
       t.boolean    :approval_required,  :default => false, :null => false
+      t.boolean    :atomize_tasks, :default => false, :null => false
       
       t.string     :remote_scm_path
       t.string     :deploy_path
+      t.string     :transport_type
       
       t.integer    :repository_id
       t.references :project

@@ -1,8 +1,12 @@
-<p><%= toggle_link 'Show current', "deploy-progress" %></p>
+<% if params[:deploy_id]
+    deploying = DeploymentObject.find_by_id(params[:deploy_id]).deployment_target.id
+   else
+  	deploying = nil
+   end %>
 <% unless @environments.empty? %>
   <% unless @project.deployment_targets.empty? %>
   <% @environments.each do |env| %>
-    <%= render :partial => "deployments/current/environment", :locals => { :environment => env } %>
+    <%= render :partial => "deployments/current/environment", :locals => { :environment => env, :deploying => deploying } %>
   <% end %>
   <% else %>
     <p class="nodata"><%= l(:text_deploy_no_targets) %>
