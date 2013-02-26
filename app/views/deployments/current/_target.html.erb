@@ -40,7 +40,7 @@
        	<td>
        	  <% unless changeset.nil? %>
        	  <% if can_promote %>
-  	  	    <%= link_to "Promote to #{next_env.name}", "#", :onclick => "showAndUpdateForm('#{this_env.name}',\"#{object.comment}\",#{changeset.id});this.blur(); return false;" %>
+  	  	    <%= link_to "Promote", "#", :onclick => "showAndUpdateForm('#{this_env.name}',\"#{object.comment}\",#{changeset.id});this.blur(); return false;" %>
   	  	  <% end %>
   	  	  <% end %>
   	  	  <% unless target.free? %>
@@ -58,6 +58,11 @@
   <% else %>
     <p class="nodata">No successful deployments</p>
   <% end %>
+<% unless changeset.nil? %>
+  <% if changeset.issues.visible.any? %>
+    <%= render :partial => 'deployments/current/related_issues', :locals => { :changeset => changeset } %>  
+  <% end %>
+<% end %>
 <% else %>
   <p class="nodata"><%= l(:label_deploy_no_deployments) %></p>
 <% end %>

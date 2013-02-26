@@ -1,11 +1,4 @@
-<h3>New Deployment</h3>
-
 <%= form_for @deployment, :url => {:action => 'create', :id => @project } do |f| %>
-<div class="box tabular">
-  <% if @deployment.environment_id %>
-    <%= f.hidden_field :environment_id %>
-  <% else %>
-    <%= f.select :environment_id %>	
-</div>
+  <%= render :partial => 'form', :locals => { :f => f } %>
 <% end %>
 

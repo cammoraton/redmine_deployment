@@ -6,7 +6,7 @@ require_dependency 'deployment/issue_patch'
 require_dependency 'deployment/project_patch'
 require_dependency 'deployment/repository_controller_patch'
 require_dependency 'deployment/repository_patch'
-
+require_dependency 'deployment/query_patch'
 require_dependency 'deployment/deploy_jobs'
 
 Redmine::Plugin.register :deployment do
@@ -26,13 +26,18 @@ Redmine::Plugin.register :deployment do
 
   project_module :deployment do
     permission :view_deployments, { :deployments => [ :index, :show, :search ] }
-    permission :manage_deployments, { :deployments => [ :index, :show, :search, :create ] }
+    permission :manage_deployments, { :deployments => [ :index, :show, :search, :create, :new ] }
     
-    permission :deployment_administrator, { :deployments => [:index, :settings, :show, :search, :create ], 
+    permission :deployment_administrator, { :deployments => [:index, :settings, :show, :search, :create, :new ], 
                                             :deployment_environments => [:new,:create,:move_up,:move_down,:edit,:update,:delete], 
                                             :deployment_targets => [:new,:create,:edit,:update,:delete ],
                                             :deployment_tasks => [:new,:create, :edit, :update, :delete, :move_up, :move_down] }
   end
+  
+  settings(:default => {
+             
+           },
+           :partial => 'deployment_settings/redmine_deployment_settings')
 end
 
 # Monkeypatch!
@@ -41,3 +46,4 @@ Issue.send(:include, IssuePatch)  # We need to modify the issues model to allow 
 Project.send(:include, ProjectPatch) # Projects need to be able to see deployment workflows
 RepositoriesController.send(:include, RepositoryControllerPatch) # Add in the find_workflow before_filter
 Repository.send(:include, RepositoryPatch)
+Query.send(:include, Deployment::QueryPatch)

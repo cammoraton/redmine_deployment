@@ -23,7 +23,14 @@ class DeploymentsController < ApplicationController
       redirect_to proc { url_for(:controller => "deployments", :action => "index", :id => @project, :deploy_id => @deployment.id, :tab => "current") }
     end
   end
-  
+ 
+  def new
+    @deployment = DeploymentObject.new() 
+    if params[:changeset_id]
+      @deployment.changeset_id = params[:changeset_id]
+    end   
+  end
+
   def show
     respond_to do |format|
        format.js   { render :partial => 'update_progress' }
@@ -31,6 +38,7 @@ class DeploymentsController < ApplicationController
   end
   
   def search
+    @deployments = DeploymentObject.find_all_by_project_id(@project.id)
     respond_to do |format|
        format.js   { render :partial => 'search_results' }
     end

@@ -75,11 +75,10 @@ class DeployJob < Struct.new(:deployment_id)
         deployment.log_message("Task \"#{task.label}\" complete")
         # TODO: Update last successful task for rollback
       end
-    rescue DeployJobSoftFailureException => e
+   # rescue DeployJobSoftFailureException => e
       # Soft failure
-      deployment.log_message("Deployment failed - #{e.message}")
-      deployment.log_message("Requeued for reattempt")
-      deployment.queue
+   #   deployment.log_message("Deployment failed - #{e.message}")
+   #   deployment.fail
     end
   end
   

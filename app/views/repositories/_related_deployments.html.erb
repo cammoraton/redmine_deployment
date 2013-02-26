@@ -1,23 +1,62 @@
 <div class="contextual">
-  <p>New</p>
+<% if User.current.allowed_to?(:manage_deployments, @project) %>
+  <p>
+  	<%= link_to "New", url_for(:controller => 'deployments', :action => 'new', :id => @project, :changeset_id => changeset.id) %>
+  </p>
+<% end %>
 </div>
+
 <div id="related_deployments">
 <h3><%= l(:label_deployment) %></h3>
+
+<% show_fieldset = false %>
+<% @project.deployment_environments.each do |env| %>
+  <% unless env.deployment_targets.empty? %>
+    <% env.deployment_targets.each do |target| %>
+      <% object = target.deployment_objects.find_by_changeset_id(changeset.id, :conditions => "\"deployment_objects\".\"status\" = 'OK'") %>
+   	  <% unless object.nil? %>
+   	    <% show_fieldset = true %>
+  	  <% end %>
+    <% end %>
+  <% end %>
+<% end %>
 <div id="fieldset">
+<% if show_fieldset == true %>
+
 <fieldset id="test" class="collapsible collapsed">
-  <legend onclick="toggleFieldset(this);">Test</legend>
+  <legend onclick="toggleFieldset(this);">Deployments</legend>
   <div style="display:none;">
     <table class="list">
       <thead>
-      	<th>Test</th>
-        <th>Test</th>
-        <th>Test</th>
-        <th>Test</th>
+      	<th>Deployed On</th>
+      	<th>Deployed By</th>
+        <th>Environment</th>
+        <th>Target</th>
+        <th>Comment</th>
+        <th>Actions</th>
       </thead>
       <tbody>
+      	<% @project.deployment_environments.each do |env| %>
+      	  <% unless env.deployment_targets.empty? %>
+      	    <% env.deployment_targets.each do |target| %>
+      	      <% object = target.deployment_objects.find_by_changeset_id(changeset.id, :conditions => "\"deployment_objects\".\"status\" = 'OK'") %>
+      	      <% unless object.nil? %>
+      	        <tr>
+      	          <td><%= format_time(object.created_on) %></td>
+      	          <td><%= object.user %>
+      	          <td><%= env.name %></td>
+      	          <td><%= target.hostname %></td>
+      	          <td><%= textilizable object.comment %></td>
+      	          <td></td>
+      	        </tr>
+      	      <% end %>
+      	    <% end %>
+      	  <% end %>
+      	<% end %>
       </tbody>
     </table>
   </div>
 </fieldset>
+<% end %>
 </div>
 </div>

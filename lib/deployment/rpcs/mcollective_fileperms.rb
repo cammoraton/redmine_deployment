@@ -32,13 +32,21 @@ module DeploymentRPC
       @client = rpcclient("fileperms", :options => options)
       # Check if node and path are strings .is_a? String  Raise exception otherwise
       @client.identity_filter @node
+      discovery = @client.discover
+      # The return from a discovery should match the node as we're implictly
+      # searching by node id.
+      if discovery.to_s != @node
+        raise MCollectiveSVNStatusCodeException, "Unable to find target.  Possible communications error or misconfiguration."
+      end
     end
     
     def change_perms(hash)
       unless hash.is_a? Hash
         raise MCollectiveFilePermsException, "Bad argument"
       end
+      got_response = nil
       @client.chown(hash) do |resp|
+        got_response = true
         if resp[:senderid] != @node
           # raise exception
           raise MCollectiveSVNException, "Senderid/node mismatch on response - #{@node} != #{resp[:senderid]}"
@@ -47,6 +55,9 @@ module DeploymentRPC
           # This should be expected on a fresh checkout/new deploy
           raise MCollectiveSVNStatusCodeException, resp[:body][:statusmsg]
         end                
+      end
+      if got_response.nil?
+        raise MCollectiveSVNStatusCodeException, "No response.  Communications error or timeout."
       end
     end
     

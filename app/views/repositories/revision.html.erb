@@ -64,8 +64,8 @@
 
 <%= textilizable @changeset.comments %>
 
-<% if User.current.allowed_to?(:view_deployments, @project) %>
-  <%= render :partial => 'related_deployments' %>
+<% if User.current.allowed_to?(:view_deployments, @project) and ! @project.deployment_environments.empty? %>
+  <%= render :partial => 'related_deployments', :locals => { :changeset => @changeset } %>
 <% end %>
 
 <% if @changeset.issues.visible.any? || User.current.allowed_to?(:manage_related_issues, @repository.project) %>

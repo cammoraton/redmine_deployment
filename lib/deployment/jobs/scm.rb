@@ -17,6 +17,8 @@ module DeployJobTask
       else
         @current_revision = @revision
       end
+      
+      puts "#{@current_revision} / #{@revision}"
       log("#{@task_name}: Connecting to target")
       @rpcclient = init_client
       log("#{@task_name}: Connected to target")

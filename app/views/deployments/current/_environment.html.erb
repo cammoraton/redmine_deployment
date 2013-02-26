@@ -1,19 +1,35 @@
 <% targets = environment.deployment_targets %>
 <% unless targets.empty? %>
 <% next_env = environment.next %>
-<% if next_env
-	 if next_env.deployment_targets.empty?
-	   can_promote = false
-     elsif ! next_env.free_targets?
-       can_promote = false
-     else
-       can_promote = true
-     end
-   end %>
 <div id="<%= environment.name %>">
   <h3><%= environment.name %></h3>
   <div id="<%= environment.name %>_targets" style="margin-left: 10px;">
   <% targets.each do |target| %>
+    <% if next_env 
+         if next_env.deployment_targets.empty?
+           can_promote = false
+         elsif ! next_env.free_targets?
+           can_promote = false
+         else
+           can_promote = false
+           next_env.deployment_targets.each do |next_target|
+           	 unless target.is_dummy?
+           	   if next_target.last_deployment.nil?
+           	   	 can_promote = true
+           	   elsif next_target.last_deployment.changeset.id != target.last_deployment.changeset.id
+           	   	 can_promote = true
+           	   end
+           	 else
+           	   if next_target.last_deployment.nil?
+           	   	 can_promote = true
+           	   elsif next_target.last_deployment.changeset.id != Repository.find_by_id(target.repository_id).latest_changeset.id
+           	     can_promote = true
+           	   end
+           	 end
+           end
+         end
+       end %>
+    
     <% unless target.description.nil? %>
       <% unless target.description.length < 1 %>
       <h3 class="info"><%= target.description %></h3>

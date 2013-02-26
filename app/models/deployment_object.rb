@@ -18,6 +18,8 @@ class DeploymentObject < ActiveRecord::Base
   
   after_create :queue_job
   
+  DEPLOYMENT_STATUSES = %w(OK Running Queued Failed)
+  
   safe_attributes 'description',
     'status',
     'created_on',

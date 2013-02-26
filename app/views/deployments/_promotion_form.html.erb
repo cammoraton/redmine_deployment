@@ -8,7 +8,7 @@
   <% if avail_targets.count > 1 %>
   <h4>Select Target</h4>
   <p>
-  	<%= f.select :deployment_target_id, options_for_select(avail_targets.collect {|s| [s.hostname, s.id] if s.free? }, deploy_to.default_target ? deploy_to.default_target.id : default_targets.first.id), {:required => true} %>
+  	<%= f.select :deployment_target_id, options_for_select(avail_targets.collect {|s| [s.hostname, s.id] if s.free? }, deploy_to.default_target ? deploy_to.default_target.id : avail_targets.first.id), {:required => true} %>
   </p>
   <% else %>
     <%= f.hidden_field :deployment_target_id, :value => avail_targets.first.id %>

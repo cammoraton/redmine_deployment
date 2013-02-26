@@ -28,7 +28,7 @@
   	  <% if User.current.allowed_to?(:manage_deployments, @project) %>
   	  <td>
   	  	<% if can_promote %>
-  	  	  <%= link_to "Promote to #{next_env.name}", "#", :onclick => "showAndUpdateForm('#{this_env.name}',\"#{changeset.comments}\",#{changeset.id});this.blur(); return false;" %>
+  	  	  <%= link_to "Promote", "#", :onclick => "showAndUpdateForm('#{this_env.name}',\"\",#{changeset.id});this.blur(); return false;" %>
   	  	<% end %>
   	  </td>
   	  <% end %>
