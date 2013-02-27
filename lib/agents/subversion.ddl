@@ -4,7 +4,7 @@ metadata    :name         => "subversion",
             :license      => "BSD",
             :version      => "1.0",
             :url          => "http://www.terc.edu",
-            :timeout      => 300
+            :timeout      => 900
 
 ["info", "status", "checkout", "update", "revert", "propset",\
  "propget", "proplist", "add", "delete", "move", "commit", "cleanup"].each do |act|

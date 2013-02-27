@@ -4,7 +4,7 @@ metadata	:name		 => "",
 			:license	 => "MIT",
 			:version	 => "1.0.0",
 			:url		 => "www.terc.edu",
-			:timeout	 => 5
+			:timeout	 => 300
 [ "chown", "chgrp", "chmod" ].each do |act|
   action act, :description => "Equivalent to executing a #{act}" do
     input :path,

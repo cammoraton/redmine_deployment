@@ -53,25 +53,26 @@ class DeployJob < Struct.new(:deployment_id)
         deployment.log_message("Starting task \"#{task.label}\"")
         case task.task_type
         when 'scm'
-         job = DeployJobTask::SCM.new(deployment, task)
+         @job = DeployJobTask::SCM.new(deployment, task)
         when 'permissions'
-         job = DeployJobTask::Permissions.new(deployment, task)
+         @job = DeployJobTask::Permissions.new(deployment, task)
         when 'verify'
-         job = DeployJobTask::Verify.new(deployment, task)
+         @job = DeployJobTask::Verify.new(deployment, task)
         when 'hudson'
-         job = DeployJobTask::Hudson.new(deployment, task)
+         @job = DeployJobTask::Hudson.new(deployment, task)
         when 'capistrano'
-         job = DeployJobTask::Capistrano.new(deployment, task)
+         @job = DeployJobTask::Capistrano.new(deployment, task)
         when 'trigger'
-         job = DeployJobTask::Trigger.new(deployment, task)
+         @job = DeployJobTask::Trigger.new(deployment, task)
         when 'puppet'
-         job = DeployJobTask::Puppet.new(deployment, task)
+         @job = DeployJobTask::Puppet.new(deployment, task)
         when 'service'
-         job = DeployJobTask::Service.new(deployment, task)
+         @job = DeployJobTask::Service.new(deployment, task)
         else
          raise DeployJobHardFailureException, "Unknown task type #{task.task_type}"
         end
-        job.run()
+        puts @job.object_id
+        @job.run()
         deployment.log_message("Task \"#{task.label}\" complete")
         # TODO: Update last successful task for rollback
       end

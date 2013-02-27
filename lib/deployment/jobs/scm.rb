@@ -18,9 +18,8 @@ module DeployJobTask
         @current_revision = @revision
       end
       
-      puts "#{@current_revision} / #{@revision}"
       log("#{@task_name}: Connecting to target")
-      @rpcclient = init_client
+      init_client
       log("#{@task_name}: Connected to target")
     end
 
@@ -48,7 +47,7 @@ module DeployJobTask
       elsif !@group.nil?
         update_perms if @group.length > 0
       end
-      
+      @rpcclient.close
     end
     
     private
@@ -59,7 +58,7 @@ module DeployJobTask
     def init_client
       if defined?(MCollective)
       begin
-        client = DeploymentRPC::MCollectiveSVN.new(@target, @path)
+        @rpcclient = DeploymentRPC::MCollectiveSVN.new(@target, @path)
       rescue MCollectiveSVNException => e
         log("#{@task_name}: Error connecting: #{e.message}")
         # Generic exception, only thrown in circumstances where we probably want to hard fail
@@ -74,7 +73,6 @@ module DeployJobTask
         raise DeployJobHardFailureException, e.message
       end
       end
-      client
     end
     
     def update

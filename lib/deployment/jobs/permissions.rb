@@ -57,6 +57,7 @@ module DeployJobTask
           arguments[:recurse] = @recurse unless @recurse.nil?
           arguments[:path]    = @path
           @rpcclient.change_perms(arguments)
+          @rpcclient.close
         rescue MCollectiveFilePermsException => e
           log("#{@task_name}: Error modifying permissions: #{e.message}")
           # Generic exception, only thrown in circumstances where we probably want to hard fail
