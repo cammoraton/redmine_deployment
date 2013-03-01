@@ -47,7 +47,6 @@ module DeployJobTask
       elsif !@group.nil?
         update_perms if @group.length > 0
       end
-      @rpcclient.close
     end
     
     private

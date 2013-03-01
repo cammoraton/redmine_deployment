@@ -8,6 +8,7 @@ class DeploymentObject < ActiveRecord::Base
   belongs_to :deployment_target
   belongs_to :changeset
   belongs_to :user
+  belongs_to :project, :foreign_key => 'project_id'
   
   has_many :issues
   belongs_to  :delayed_job
@@ -17,8 +18,28 @@ class DeploymentObject < ActiveRecord::Base
   validates_presence_of :comment, :if => :requires_comments?
   
   after_create :queue_job
+  before_save  :set_project_id
   
   DEPLOYMENT_STATUSES = %w(OK Running Queued Failed)
+
+                            
+  acts_as_activity_provider :type => 'deployments',
+                            :timestamp => "#{DeploymentObject.table_name}.created_on",
+                            :author_key => "#{DeploymentObject.table_name}.user_id",
+                            :find_options => { :include => :project,
+                                               :conditions => "#{DeploymentObject.table_name}.status = 'OK'" },
+                            :permission => :view_deployments
+                            
+  acts_as_event             :title => Proc.new { |o| 
+                                  retval = "Deployed Revision #{o.changeset.revision} to #{o.deployment_target.deployment_environment.name}" if o.succeeded? 
+                                  retval },
+                            :description => :comment,
+                            :datetime => :updated_on,
+                            :type => 'deployments',
+                            :author => :user,
+                            :url => Proc.new {|o| { :controller => :deployments, :id => o.project, :action => 'index', :tab => 'current', :deploy_id => o.id } }
+
+ 
   
   safe_attributes 'description',
     'status',
@@ -53,6 +74,10 @@ class DeploymentObject < ActiveRecord::Base
   
   def failed?
     return true if self.status == "Failed"
+  end
+  
+  def succeeded?
+    return true if self.status == "OK"
   end
   
   def queue
@@ -111,6 +136,12 @@ class DeploymentObject < ActiveRecord::Base
     unless self.delayed_job_id.nil?
       job = Delayed::Job.find_by_id(self.delayed_job_id)
       job.destroy
+    end
+  end
+  
+  def set_project_id
+    if self.project_id.nil?
+      self.project_id = self.deployment_target.project.id
     end
   end
 end    

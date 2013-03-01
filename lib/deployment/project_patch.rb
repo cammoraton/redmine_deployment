@@ -3,6 +3,7 @@ module ProjectPatch
     base.class_eval do
       has_many :deployment_environments, :dependent => :destroy
       has_many :deployment_targets, :through => :deployment_environments
+      has_many :deployment_objects
       
       has_one  :deployment_setting, :dependent => :destroy
       

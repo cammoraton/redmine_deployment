@@ -1,6 +1,7 @@
 # English strings go here for Rails i18n
 en:
   label_deployment:             'Deployment'
+  label_deployment_plural:      'Deployment'
   label_deploy_status:          'Status'
   label_deploy_history:         'History'
   label_deploy_settings:        'Settings'
@@ -44,6 +45,7 @@ en:
   label_deployment_target_repository:        "Repository"
   label_deployment_target_dummy:             "Dummy target"
   label_deployment_inherit_settings:         "Inherit Settings"
+  label_deployment_atomize_tasks:            "Atomize Tasks"
   
   label_deployment_task_new:               "New Task"
   label_deployment_task_edit:              "Edit"
@@ -81,6 +83,7 @@ en:
   text_deployment_target_comments_required: "Require comments for deployments to this target"
   text_deployment_target_dummy:             "Disable direct deployment and treat as if the head of the default repository is currently deployed for promotion purposes"
   text_deployment_inherit_settings:         "If checked uses the current global settings.  If not uses whatever is configured here"
+  text_deployment_atomize_tasks:            "Atomizes tasks.  Changes behavior on failure."
   text_deployment_target_repository:        "If not inherited, use this repository"
   text_deployment_target_remote_scm_path:   "If not inherited, use this path to the repository(if it will differ from the above)"
   text_deployment_target_deploy_path:       "If not inherited, use this path to deploy to."
@@ -92,22 +95,31 @@ en:
   text_deployment_task_trigger_id:        "Id of the deployment to trigger"
 
   # Tasks
-  deployment_task_type_cap:     "Capistrano"
-  deployment_task_type_chown:   "Modify Permissions"
+  deployment_task_type_capistrano:     "Capistrano"
+  deployment_task_type_permissions:   "Modify Permissions"
   deployment_task_type_hudson:  "Hudson/Jenkins"
   deployment_task_type_notify:  "Notify"
   deployment_task_type_scm:     "Remote Checkout"
   deployment_task_type_trigger: "Trigger Deployment"
   deployment_task_type_verify:  "Verify"
+  deployment_task_type_puppet:  "Trigger Puppet Run"
+  
+  # Transport types
+  label_deployment_transport_type:       "Transport"
+  text_deployment_transport_type:        "Which transport style to use for remote-procedure calls.  SSH is not recommended."
+  
+  deployment_transport_type_mcollective: "MCollective"
+  deployment_transport_type_ssh:         "SSH"
 
   # Tooltips
-  deploy_metadata_cap_tooltip:     "The capistrano task type issues the checkout on the deployment server and then runs the deployment via a capfile included in that checkout"
-  deploy_metadata_chown_tooltip:   "Selectively change ownership, group and mode.  This allows you to for instance to fix permissions so a directory can be used for uploads"
+  deploy_metadata_capistrano_tooltip:     "The capistrano task type issues the checkout on the deployment server and then runs the deployment via a capfile included in that checkout"
+  deploy_metadata_permissions_tooltip:   "Selectively change ownership, group and mode.  This allows you to for instance to fix permissions so a directory can be used for uploads"
   deploy_metadata_hudson_tooltip:  "Runs a hudson or jenkins job"
   deploy_metadata_notify_tooltip:  "The notify task type gives granularity to notifications.  Instead of notifying at conclusion or on error, this allows you to selectively notify at each step"
   deploy_metadata_scm_tooltip:     "The remote checkout task type is what actually issues a remote checkout.  This should probably be included in every non-capistrano deployment"
   deploy_metadata_trigger_tooltip: "Trigger a deployment on another target"
   deploy_metadata_verify_tooltip:  "Run the periodic reconciliation/verification job"
+  deploy_metadata_puppet_tooltip:  "Executes a puppet agent run on the target"
   
   # Labels
   label_deploy_metadata_relative_path: "Relative path" 

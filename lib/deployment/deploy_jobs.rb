@@ -42,6 +42,9 @@ class DeployJob < Struct.new(:deployment_id)
   end
 
   def perform
+    # Note if mcollective is below version 2.2.3 this may fail on subsequent runs
+    # Consider a check for MCollective and MCollective version and then modifying behavior
+    # to do a Process.fork (disconnecting from activerecord and reconnecting) and Process.wait
     deployment = DeploymentObject.find(deployment_id)
     deployment.log_message("Starting deployment")
     tasks = deployment.tasks

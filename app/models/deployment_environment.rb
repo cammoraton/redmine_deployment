@@ -7,6 +7,9 @@ class DeploymentEnvironment < ActiveRecord::Base
   has_many :deployment_targets, :dependent => :destroy
   has_many :deployment_objects, :through => :deployment_targets
   has_one  :deployment_setting, :through => :project
+  
+  has_one  :default_target, :conditions => ["\"deployment_targets\".\"is_default\" = ?", true], 
+           :class_name => "DeploymentTarget", :foreign_key => "deployment_environment_id"
   #before_delete :fix_order
   #Need to do an is_default fix
   

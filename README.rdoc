@@ -1,5 +1,9 @@
 = deployment
 
+Requires MCollective 2.2.3 or later due to a bug in earlier versions.  I found a work around to this
+in that if you do a Process.fork before calling the MCollective client, it will work as expected but
+I need to fold this in.
+
 Prototype for a deployments plugin in redmine, based on remote triggering SCM updates and checkouts.
 
 You need to run the delayed job setup stuff and rerun bundle install.

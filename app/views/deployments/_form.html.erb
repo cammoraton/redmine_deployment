@@ -1,8 +1,25 @@
 <h2>
-  New Deployment
+  New Deployment to <%= @project.default_environment.name %>
 </h2>
 <div class="box">
   <%= f.hidden_field :changeset_id %>
+  <% if @project.default_environment %>
+    <div id="deployment_target_select">
+    <% avail_targets = @project.default_environment.deployment_targets %>
+    <% if avail_targets.count > 1 %>
+    <h4>Select Target</h4>
+      <p>
+  	    <%= f.select :deployment_target_id, options_for_select(avail_targets.collect {|s| [s.hostname, s.id] if s.free? }, @project.default_target ? @project.default_target.id : avail_targets.first.id), {:required => true} %>
+      </p>
+    <% else %>
+      <%= f.hidden_field :deployment_target_id, :value => @project.default_target.id %>
+    <% end %>   	
+    </div>
+  <% end %>
+  <h4>Comment</h4>
+  <p class="none">
+  	<%= f.text_area :comment, :value => "", :rows => 5, :cols => 50 %>
+  </p>
 </div>
 <p>
   <%= submit_tag("Deploy") %>

@@ -6,7 +6,8 @@ class DeploymentTarget < ActiveRecord::Base
   belongs_to :deployment_environment
 
   has_one :deployment_setting, :through => :deployment_environment
-
+  has_one :project, :through => :deployment_environment
+  
   has_many :deployment_tasks,   :dependent => :destroy, :order => '"deployment_tasks"."order"'
   has_many :deployment_objects, :dependent => :destroy
     

@@ -29,28 +29,23 @@ module DeploymentRPC
       # which is probably owned by root and will bomb out)
       options =  MCollective::Util.default_options
       options[:config] = 'plugins/deployment/config/mcollective.cfg'
-      @client =  MCollective::RPC::Client.new("fileperms", :configfile => 'plugins/deployment/config/mcollective.cfg', :options => options)
+      @client = rpcclient("fileperms", :options => options)
       
       # Check if node and path are strings .is_a? String  Raise exception otherwise
       @client.identity_filter @node
-      discovery = @client.discover
+      @client.progress = false
+      @client.verbose = false
       # The return from a discovery should match the node as we're implictly
       # searching by node id.
-      if discovery.to_s != @node
+      if @client.discover.to_s != @node
         raise MCollectiveSVNStatusCodeException, "Unable to find target.  Possible communications error or misconfiguration."
       end
-    end
-    
-    def close
-      @client.disconnect
-      @client.connection = nil
     end
     
     def change_perms(hash)
       unless hash.is_a? Hash
         raise MCollectiveFilePermsException, "Bad argument"
       end
-      @client.ttl = 300
       @client.timeout = 300
       got_response = nil
       @client.chown(hash) do |resp|

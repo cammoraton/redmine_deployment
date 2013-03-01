@@ -1,7 +1,6 @@
 begin
   require 'mcollective'
   require 'yaml'
-  require 'singleton'
 rescue LoadError => e
   # No mcollective, probably because the stomp gem is absent
 end
@@ -32,7 +31,8 @@ module DeploymentRPC
       # which is probably owned by root and will bomb out)
       options =  MCollective::Util.default_options
       options[:config] = 'plugins/deployment/config/mcollective.cfg'
-      @client = MCollective::RPC::Client.new("subversion", :configfile => 'plugins/deployment/config/mcollective.cfg', :options => options)
+      @client = rpcclient("subversion", :options => options)
+      
       # Check if node and path are strings .is_a? String  Raise exception otherwise
       @client.identity_filter @node
       @client.progress = false
@@ -43,11 +43,7 @@ module DeploymentRPC
         raise MCollectiveSVNStatusCodeException, "Unable to find target.  Possible communications error or misconfiguration."
       end
     end
-    
-    def close
-      @client.disconnect
-    end
-    
+
     def update(current_revision, uri, revision)
       # Return checkout if no current_revision
       return checkout(uri,revision) if @current_revision.nil?
@@ -76,11 +72,9 @@ module DeploymentRPC
         # Otherwise do the update
         got_response = nil
         @client.update(:path => @path, :revision => revision) do |resp|
-          puts resp.to_yaml
           got_response = true
           if resp[:senderid] != @node
             # raise exception
-            close
             raise MCollectiveSVNException, "Senderid/node mismatch - #{@node} != #{resp[:senderid]}"
           end
           if resp[:body][:statuscode] != 0
@@ -129,10 +123,10 @@ module DeploymentRPC
       # This is a cheap hack to not have to delve into the mcollective code beyond
       # the docs in simple RPC
       got_response = nil
-      @client.timeout = 60
+      @client.ttl = 5
+      @client.timeout = 5
       @client.info(:path => @path) do |resp|
         got_response = true
-        puts resp.to_yaml
         if resp[:senderid] != @node
           # raise exception
           raise MCollectiveSVNException, "Senderid/node mismatch on response - #{@node} != #{resp[:senderid]}"

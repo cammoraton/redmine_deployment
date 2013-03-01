@@ -3,16 +3,7 @@
 <h3><%= l(:label_related_issues) %></h3>
 <ul>
 <% changeset.issues.visible.each do |issue| %>
-  <li id="<%= "related-issue-#{issue.id}" %>"><%= link_to_issue issue %>
-    <%= link_to(image_tag('link_break.png'),
-                {:controller => 'repositories', :action => 'remove_related_issue',
-                  :id => @project, :repository_id => changeset.repository.identifier_param,
-                  :rev => changeset.identifier, :issue_id => issue},
-                :remote => true,
-                :method => :delete,
-                :data => {:confirm => l(:text_are_you_sure)},
-                :title => l(:label_relation_delete)) if manage_allowed %>
-  </li>
+  <li id="<%= "related-issue-#{issue.id}" %>"><%= link_to_issue issue %></li>
 <% end %>
 </ul>
 </div>

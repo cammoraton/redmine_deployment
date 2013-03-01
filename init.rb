@@ -20,8 +20,8 @@ Redmine::Plugin.register :deployment do
   requires_redmine :version_or_higher => '2.2.0'
 
   # Add in the deployments menu
-  menu :project_menu, :deployments, { :controller => :deployments, :action => :index }, :after => :roadmap, :param => :id, :caption => :label_deployment,
-       :if => Proc.new { |p| p.module_enabled?(:deployment) }
+  menu :project_menu, :deployments, { :controller => :deployments, :action => :index }, :after => :roadmap, :param => :id, :caption => :label_deployment
+  
   # Need to add in a check for if there are valid targets for the project.
 
   project_module :deployment do
@@ -33,6 +33,8 @@ Redmine::Plugin.register :deployment do
                                             :deployment_targets => [:new,:create,:edit,:update,:delete ],
                                             :deployment_tasks => [:new,:create, :edit, :update, :delete, :move_up, :move_down] }
   end
+  
+  activity_provider :deployments, :class_name => 'DeploymentObject', :default => false
   
   settings(:default => {
              
