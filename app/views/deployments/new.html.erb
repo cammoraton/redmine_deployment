@@ -1,4 +1,4 @@
 <%= form_for @deployment, :url => {:action => 'create', :id => @project } do |f| %>
-  <%= render :partial => 'form', :locals => { :f => f } %>
+  <%= render :partial => 'deployments/common/deployment_form', :locals => { :f => f } %>
 <% end %>
 

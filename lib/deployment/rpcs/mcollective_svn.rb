@@ -123,8 +123,7 @@ module DeploymentRPC
       # This is a cheap hack to not have to delve into the mcollective code beyond
       # the docs in simple RPC
       got_response = nil
-      @client.ttl = 5
-      @client.timeout = 5
+      @client.timeout = 15
       @client.info(:path => @path) do |resp|
         got_response = true
         if resp[:senderid] != @node
@@ -140,7 +139,7 @@ module DeploymentRPC
         # Also have :last_changed_date, :root, :last_changed_rev, and :author
       end
       if got_response.nil?
-        raise MCollectiveSVNStatusCodeException, "No response.  Communications error or timeout."
+        raise MCollectiveSVNException, "No response.  Communications error or timeout.  Possible communications error or misconfiguration."
       end
     end
   end

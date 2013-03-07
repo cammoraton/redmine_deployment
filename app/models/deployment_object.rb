@@ -5,9 +5,13 @@ class DeploymentObject < ActiveRecord::Base
   include Redmine::SafeAttributes
   unloadable
   
-  belongs_to :deployment_target
+  belongs_to :deployment_target  
+  has_one    :deployment_environment, :through => :deployment_target
+  has_many   :deployment_tasks, :through => :deployment_target
+  
   belongs_to :changeset
   belongs_to :user
+  
   belongs_to :project, :foreign_key => 'project_id'
   
   has_many :issues
@@ -63,7 +67,7 @@ class DeploymentObject < ActiveRecord::Base
   def tasks
     self.deployment_target.deployment_tasks
   end
-  
+
   def queued?
     return true if self.status == "Queued"
   end
@@ -95,6 +99,13 @@ class DeploymentObject < ActiveRecord::Base
     self.status = "Failed"
     self.save!
     destroy_job
+  end
+  
+  def succeed
+    self.status = "OK"
+    self.deployment_target.last_deployment_id = self.id
+    self.deployment_target.save!
+    self.save!
   end
   
   def log_message(message)

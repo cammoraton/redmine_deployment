@@ -27,7 +27,7 @@ class DeploymentTargetsController < ApplicationController
       @target.repository_id = @settings.repository_id
     end
     if @target.save
-      redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+      redirect_to proc { url_for(:controller => 'deployments', :action => 'settings', :id => @project) }
     end
   end
   
@@ -35,14 +35,14 @@ class DeploymentTargetsController < ApplicationController
     @target = DeploymentTarget.find(params[:target_id])
     @target.attributes = params[:deployment_target]
     if @target.save
-      redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+      redirect_to proc { url_for(:controller => 'deployments', :action => 'settings', :id => @project) }
     end
   end
   
   def delete
     @target = DeploymentTarget.find(params[:target_id])
     @target.destroy
-    redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    redirect_to proc { url_for(:controller => 'deployments', :action => 'settings', :id => @project) }
   end
   
   private

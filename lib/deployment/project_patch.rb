@@ -1,9 +1,9 @@
 module ProjectPatch
   def self.included(base)
     base.class_eval do
-      has_many :deployment_environments, :dependent => :destroy
+      has_many :deployment_environments, :order => "\"#{DeploymentEnvironment.table_name}\".\"order\"", :dependent => :destroy
       has_many :deployment_targets, :through => :deployment_environments
-      has_many :deployment_objects
+      has_many :deployment_objects, :order => "#{DeploymentObject.table_name}.created_on DESC"
       
       has_one  :deployment_setting, :dependent => :destroy
       

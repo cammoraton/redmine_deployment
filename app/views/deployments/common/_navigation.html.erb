@@ -1,0 +1,12 @@
+<div class="tabs">
+  <ul>
+  <% deployment_tabs.each do |tab| -%>
+    <li><%= link_to l(tab[:label]), tab[:url],
+                                    :class => (tab[:name] != current_tab ? nil : 'selected') %></li>
+  <% end -%>
+  </ul>
+  <div class="tabs-buttons" style="display:none;">
+    <button class="tab-left" onclick="moveTabLeft(this);"></button>
+    <button class="tab-right" onclick="moveTabRight(this);"></button>
+  </div>
+</div>

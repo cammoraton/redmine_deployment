@@ -28,7 +28,7 @@ Redmine::Plugin.register :deployment do
     permission :view_deployments, { :deployments => [ :index, :show, :search ] }
     permission :manage_deployments, { :deployments => [ :index, :show, :search, :create, :new ] }
     
-    permission :deployment_administrator, { :deployments => [:index, :settings, :show, :search, :create, :new ], 
+    permission :deployment_administrator, { :deployments => [:index, :settings, :update_settings, :show, :search, :create, :new ], 
                                             :deployment_environments => [:new,:create,:move_up,:move_down,:edit,:update,:delete], 
                                             :deployment_targets => [:new,:create,:edit,:update,:delete ],
                                             :deployment_tasks => [:new,:create, :edit, :update, :delete, :move_up, :move_down] }

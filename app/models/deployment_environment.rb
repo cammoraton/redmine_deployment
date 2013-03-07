@@ -5,14 +5,13 @@ class DeploymentEnvironment < ActiveRecord::Base
   
   belongs_to :project
   has_many :deployment_targets, :dependent => :destroy
+  has_many :deployment_tasks, :through => :deployment_targets
   has_many :deployment_objects, :through => :deployment_targets
   has_one  :deployment_setting, :through => :project
   
   has_one  :default_target, :conditions => ["\"deployment_targets\".\"is_default\" = ?", true], 
            :class_name => "DeploymentTarget", :foreign_key => "deployment_environment_id"
-  #before_delete :fix_order
-  #Need to do an is_default fix
-  
+
   validates_uniqueness_of :order, :scope => :project_id
   validates_uniqueness_of :name, :scope => :project_id
   
@@ -24,7 +23,7 @@ class DeploymentEnvironment < ActiveRecord::Base
   
   safe_attributes 'name',
                   'description'
-  
+
   # Sugar
   def valid_target?
     return false unless self.valid_direct_target
@@ -41,6 +40,10 @@ class DeploymentEnvironment < ActiveRecord::Base
       return true unless target.is_dummy?
     end
     return false
+  end
+  
+  def multiple_targets?
+    return true if self.deployment_targets.count > 1
   end
   
   def free_targets?
@@ -81,16 +84,24 @@ class DeploymentEnvironment < ActiveRecord::Base
     self.save!
   end
   
-  def next
-    return nil unless self.order > 1
-    DeploymentEnvironment.find_by_order(self.order - 1, :conditions => "project_id = #{self.project_id}")
+  def can_promote(changeset_id)
+     return false if changeset_id.nil?
+     return false if ! self.free_targets?
+     self.deployment_targets.each do |target|
+       if target.last_deployment.nil?
+         return true
+       elsif target.last_deployment.changeset_id != changeset_id
+         return true
+       end
+     end
+     return false
   end
   
   private
   def fix_default
     if self.is_default
       self.project.deployment_environments.each do |env|
-        if env.is_default?
+        if env.is_default? and env.id != self.id
           env.is_default = false
           env.save!
         end

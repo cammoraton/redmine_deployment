@@ -1,0 +1,25 @@
+<h2>
+<% if type == "promote" %>
+  Promote <%= deploy_from.name %> to <%= deploy_to.name %>
+<% end %>
+</h2>
+<div class="box">
+  <% avail_targets = deploy_to.deployment_targets %>
+  <% if avail_targets.count > 1 %>
+  <h4>Select Target</h4>
+  <p>
+  	<%= f.select :deployment_target_id, options_for_select(avail_targets.collect {|s| [s.hostname, s.id] if s.free? }, deploy_to.default_target ? deploy_to.default_target.id : avail_targets.first.id), {:required => true} %>
+  </p>
+  <% else %>
+    <%= f.hidden_field :deployment_target_id, :value => avail_targets.first.id %>
+  <% end %>
+  <%= f.hidden_field :changeset_id, :value => "" %>
+  <h4>Comment</h4>
+  <p class="none">
+  	<%= f.text_area :comment, :value => "", :rows => 5, :cols => 50 %>
+  </p>
+</div>
+<p>
+<%= button_to_function "Cancel", "clearAndHideForm('#{deploy_from.name}');this.blur(); return false;" %>	  	
+<%= submit_tag("Deploy") %>
+</p>

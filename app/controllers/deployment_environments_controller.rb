@@ -23,7 +23,7 @@ class DeploymentEnvironmentsController < ApplicationController
       @environment.order = @project.deployment_environments.last.order.to_i + 1
     end
     @environment.save!
-    redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    redirect_to proc { url_for(:controller => 'deployments', :action => 'settings', :id => @project, :tab => 'settings') }
   end
   
   def edit
@@ -34,7 +34,7 @@ class DeploymentEnvironmentsController < ApplicationController
     @environment = DeploymentEnvironment.find(params[:environment_id])
     @environment.attributes = params[:deployment_environment]
     if @environment.save
-      redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+      redirect_to proc { url_for(:controller => 'deployments', :action => 'settings', :id => @project) }
     end
   end
   
@@ -42,19 +42,19 @@ class DeploymentEnvironmentsController < ApplicationController
     @environment = DeploymentEnvironment.find(params[:environment_id])
     @environment.destroy
     # Need to do order cleanup in delete method
-    redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    redirect_to proc { url_for(:controller => 'deployments', :action => 'settings', :id => @project) }
   end
   
   def move_down
     @environment = DeploymentEnvironment.find(params[:environment_id])
     @environment.move_down
-    redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    redirect_to proc { url_for(:controller => 'deployments', :action => 'settings', :id => @project) }
   end
   
   def move_up
     @environment = DeploymentEnvironment.find(params[:environment_id])
     @environment.move_up
-    redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    redirect_to proc { url_for(:controller => 'deployments', :action => 'settings', :id => @project) }
   end
   
   private

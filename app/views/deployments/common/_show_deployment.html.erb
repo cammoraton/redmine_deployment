@@ -1,0 +1,56 @@
+<% unless @deployment.new_record? 
+     object = @deployment 
+   else 
+     object = DeploymentObject.find_by_id(params[:deploy_id])
+   end %>
+<% unless object.status == 'OK' or object.status == 'Failed' 
+   refresh = true 
+end %>
+
+<% if refresh %>
+<script type="text/javascript">
+  <%= render :partial => 'deployments/common/deploy_update', :formats => [:js], :locals => { :deploy_id => params[:deploy_id] } %>
+</script>
+<% end %>
+
+<div class="box" style="margin: 0px; margin-bottom: 0px; border-top-width: 0px; border-bottom-width:0px -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px;">
+<div class="contextual" style="margin-right: 10px;">
+  <% if refresh %>
+  <p><%= toggle_link 'Close', "deploy-progress" %></p>
+  <% else %>
+    <%= link_to 'Close and Refresh', url_for(:controller => 'deployments', :action => 'index', :id => @project)%>
+  <% end %>
+</div>
+<div>
+<% if refresh %>
+<img src="/plugin_assets/deployment/images/deploy-progress.gif">
+<% end %>
+<h3 style="margin-top: 0px; margin-bottom: 4px;">
+</div>
+<center>
+<% if object.queued? %>
+  Deployment Queued
+<% elsif object.running? %>
+  Deploying
+<% else %>
+  Deployed
+<% end %>
+</center>
+</h3>
+<div class="box">
+  <h3>Log</h3>
+  <div class="box logfile_scroll">
+   	<p><%= textilizable object.log %></p>
+  </div>
+  <table class="list">
+	<thead>
+	  <th>Time Elapsed:</th>
+	  <% if refresh %>
+	  <th><%= (Time.now - object.created_on).to_i %> Seconds</th>
+	  <% else %>
+	  <th><%= (object.updated_on - object.created_on).to_i %> Seconds</th>
+	  <% end %>
+	</thead>
+  </table>
+</div>
+</div>

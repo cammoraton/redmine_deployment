@@ -42,47 +42,68 @@ class DeployJob < Struct.new(:deployment_id)
   end
 
   def perform
-    # Note if mcollective is below version 2.2.3 this may fail on subsequent runs
-    # Consider a check for MCollective and MCollective version and then modifying behavior
-    # to do a Process.fork (disconnecting from activerecord and reconnecting) and Process.wait
-    deployment = DeploymentObject.find(deployment_id)
-    deployment.log_message("Starting deployment")
-    tasks = deployment.tasks
-    begin
-      #TODO: We should have a flag to atomize tasks.
-      #TODO: We should have a flag to retry
-      #TODO: We should have a method to perform rollbacks
-      tasks.each do |task|
-        deployment.log_message("Starting task \"#{task.label}\"")
-        case task.task_type
-        when 'scm'
-         @job = DeployJobTask::SCM.new(deployment, task)
-        when 'permissions'
-         @job = DeployJobTask::Permissions.new(deployment, task)
-        when 'verify'
-         @job = DeployJobTask::Verify.new(deployment, task)
-        when 'hudson'
-         @job = DeployJobTask::Hudson.new(deployment, task)
-        when 'capistrano'
-         @job = DeployJobTask::Capistrano.new(deployment, task)
-        when 'trigger'
-         @job = DeployJobTask::Trigger.new(deployment, task)
-        when 'puppet'
-         @job = DeployJobTask::Puppet.new(deployment, task)
-        when 'service'
-         @job = DeployJobTask::Service.new(deployment, task)
-        else
-         raise DeployJobHardFailureException, "Unknown task type #{task.task_type}"
-        end
-        puts @job.object_id
-        @job.run()
-        deployment.log_message("Task \"#{task.label}\" complete")
-        # TODO: Update last successful task for rollback
+    #  A few things seem to behave oddly if called consecutively.  Mcollective in particular
+    #  has some odd behavior surrounding this.
+    #  Explicitly disconnect from ActiveRecord
+    if defined?(ActiveRecord::Base)
+      ActiveRecord::Base.connection.disconnect!
+    end
+    Process.fork do 
+      # Reconnect to ActiveRecord
+      if defined?(ActiveRecord::Base)
+        ActiveRecord::Base.establish_connection
       end
-   # rescue DeployJobSoftFailureException => e
+      # Fetch the deployment object
+      deployment = DeploymentObject.find(deployment_id, :include => {:deployment_target => :deployment_tasks})
+      deployment.log_message("Starting deployment")
+      tasks = deployment.deployment_target.deployment_tasks
+      begin
+        #TODO: We should have a flag to atomize tasks.
+        #TODO: We should have a flag to retry
+        #TODO: We should have a method to perform rollbacks
+        tasks.each do |task|
+          deployment.log_message("Starting task \"#{task.label}\"")
+          case task.task_type
+          when 'scm'
+            @job = DeployJobTask::SCM.new(deployment, task)
+          when 'permissions'
+            @job = DeployJobTask::Permissions.new(deployment, task)
+          when 'verify'
+            @job = DeployJobTask::Verify.new(deployment, task)
+          when 'hudson'
+            @job = DeployJobTask::Hudson.new(deployment, task)
+          when 'capistrano'
+            @job = DeployJobTask::Capistrano.new(deployment, task)
+          when 'trigger'
+            @job = DeployJobTask::Trigger.new(deployment, task)
+          when 'puppet'
+            @job = DeployJobTask::Puppet.new(deployment, task)
+          when 'service'
+            @job = DeployJobTask::Service.new(deployment, task)
+          else
+           raise DeployJobHardFailureException, "Unknown task type #{task.task_type}"
+          end
+          puts @job.object_id
+          @job.run()
+          deployment.log_message("Task \"#{task.label}\" complete")
+        # TODO: Update last successful task for rollback
+        end
+      rescue Exception => e
       # Soft failure
-   #   deployment.log_message("Deployment failed - #{e.message}")
-   #   deployment.fail
+        deployment.log_message("Deployment failed - #{e.message}")
+        deployment.fail
+      end
+    end
+    Process.wait
+    # Implicitly call garbage collection
+    GC.start
+    # Reconnect to activerecord
+    if defined?(ActiveRecord::Base)
+      ActiveRecord::Base.establish_connection
+    end
+    deployment = DeploymentObject.find(deployment_id)
+    if deployment.failed?
+      raise DeployJobHardFailureException, "Failed during fork"
     end
   end
   
@@ -91,13 +112,12 @@ class DeployJob < Struct.new(:deployment_id)
     deployment = DeploymentObject.find(deployment_id)
     deployment.delayed_job_id = nil
     deployment.log_message("Deployment complete")
-    deployment.status = "OK"
-    deployment.save!
+    deployment.succeed
   end
 
   def error(job, e)
-    deployment = DeploymentObject.find(deployment_id)
-    deployment.log_message("Deployment failed: #{e.message}")
-    deployment.fail
+ #   deployment = DeploymentObject.find(deployment_id)
+ #   deployment.log_message("Deployment failed: #{e.message}")
+ #   deployment.fail
   end
 end

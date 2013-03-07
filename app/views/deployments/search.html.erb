@@ -1,0 +1,57 @@
+<%= render :partial => "deployments/common/navigation", :locals => { :current_tab => 'history' } %>
+<% deployments = @project.deployment_objects %>
+<div class="box tabular">
+<table class="list">
+  <thead>
+  	<th>Deployed On</th>
+    <th>Deployed By</th>
+    <th>Deployed To</th>
+    <th>Comment</th>
+    <% if User.current.allowed_to?(:view_changesets, @project) %>
+    <th>
+      Revision
+    </th>
+    <% end %>
+    <th>Status</th>
+    <% if User.current.allowed_to?(:manage_deployments, @project) %>
+  	<th>
+  	  Actions
+  	</th>
+  	<% end %>
+  </thead>
+  <tbody>
+  <% deployments.each do |deployment| %>
+    <tr>
+    <td><%= format_time(deployment.created_on) %></td>
+  	<td><%= deployment.user %></td>
+  	<td><% if deployment.deployment_environment.multiple_targets? -%>
+  		<% unless deployment.deployment_target.description.nil? -%>
+          <% unless deployment.deployment_target.description.length < 1 -%>
+            <%= deployment.deployment_target.description %>, 
+          <% end -%>
+        <% end -%>
+  		<% end -%>
+  		<%= deployment.deployment_target.deployment_environment.name %>
+    </td>
+  	<td><%= textilizable deployment.comment %></td>
+  	<% if User.current.allowed_to?(:view_changesets, @project) %>
+  	<td>
+  	  <% unless deployment.changeset.nil? %>
+  	  <%= deployment.changeset.revision %>
+  	  <% end %>
+  	</td>
+  	<% end %>
+  	<td><%= deployment.status %>
+  	<% if User.current.allowed_to?(:manage_deployments, @project) %>
+  	<td>
+      <%= link_to "Redeploy", url_for(:controller => 'deployments', :action => 'create', :id => @project, 
+              :deployment_object => {:deployment_target_id => deployment.deployment_target_id,
+                                     :comment => deployment.comment,
+                                     :changeset_id => deployment.changeset_id}) %>
+  	</td>
+  	<% end %>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+</div>

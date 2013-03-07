@@ -1,34 +1,121 @@
-<h2><%=l(:label_deployment)%></h2>
-<% if @project.module_enabled?(:repository) and @project.repository %>
-  <% if params[:deploy_id] %>
-    <div id="deploy-progress" class="deploy-progress">
-      <%= render :partial => "progress", :locals => { :params => params } %>
-    </div>
-  <% end %>
-  <% if User.current.allowed_to?(:manage_deployments, @project) %>
-    <% @environments.each do |environment| %>
-      <% next_env = environment.next %>
-      <% unless next_env.nil? %>
-        <% unless next_env.deployment_targets.empty? %>
-          <div id="<%= environment.name %>_deployment_form" class="deploy-popup-form">
-          <div class="box" style="margin: 0px; margin-bottom: 0px; border-top-width: 0px; border-bottom-width:0px -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px;">
-          <%= form_for @deployment, :url => url_for(:controller => 'deployments', :action => 'create', :id => @project), :html => { :id => "#{environment.name}_actual_form" } do |f| %>
-            <%= render :partial => 'deployments/promotion_form', :locals => { :f => f, :deploy_from => environment, :deploy_to => environment.next, :type => "promote" } %>
-          <% end %>
-          </div>
-          </div>
-        <% end %>
-      <% end %>
-    <% end %>
-  <% end %>
-  <%= render_tabs deployment_tabs %>
-<% else %>
-  <p class="nodata">Deployment is linked to SCM, a repository MUST be configured</p>
-<% end %>
-
-
 <% content_for :header_tags do %>
   <%= javascript_include_tag 'promotion_form.js', :plugin => "deployment" %>
   <%= javascript_include_tag 'deployment_search.js', :plugin => "deployment" %>
   <%= stylesheet_link_tag "deploy_job.css", :plugin => "deployment", :media => "screen" %>
 <% end %>
+
+<%= render :partial => "deployments/common/navigation", :locals => { :current_tab => 'current' } %>
+<% if params[:deploy_id] -%>
+  <div id="deploy-progress" class="deploy-progress">
+    <%= render :partial => "deployments/common/show_deployment", :locals => { :params => params } %>
+  </div>
+<% end -%>
+<div class="tab-content">
+<% unless @environments.empty? -%>
+  <% unless @project.deployment_targets.empty? -%>
+  <% @environments.each do |env| -%>
+    <% index = @environments.find_index(env)
+       next_env = nil if index < 1
+       next_env = @environments.at(index-1) if index >= 1 -%>
+    <div id="<%= env.name %>">
+    <h3><%= env.name %></h3>
+    <div id="<%= env.name %>_targets" style="margin-left: 10px;">
+    <% promotion_form = nil %>
+    <% env.deployment_targets.each do |target| -%>
+      <% unless target.deployment_tasks.empty? and !target.is_dummy? -%>
+        <% deployment = nil 
+           repository = nil %>
+        <% unless target.description.nil? -%>
+          <% unless target.description.length < 1 -%>
+      <h3 class="info"><%= target.description %></h3>
+          <% end -%>
+        <% end -%>
+        <% unless target.is_dummy? -%>
+          <% deployment = target.last_deployment
+             changeset = deployment.changeset unless deployment.nil?
+             can_promote = false
+             deploy_label = "Deployed On"
+             author_label = "Deployed By"
+             deployed_on = deployment.created_on unless deployment.nil?
+             deployed_by = deployment.user unless deployment.nil?
+             comment = deployment.comment unless deployment.nil?
+             unless next_env.nil?
+               can_promote = next_env.can_promote(changeset.id) unless changeset.nil?
+             end -%>
+        <% else -%>
+          <% repository = target.repository
+             changeset = repository.latest_changeset
+             can_promote = false
+             deploy_label = "Commited On"
+             author_label = "Committed By"
+             deployed_by = changeset.author
+             comment = changeset.comments
+             deployed_on = changeset.committed_on
+             unless next_env.nil?
+               can_promote = next_env.can_promote(changeset.id) unless changeset.nil?
+             end -%>
+        <% end -%>
+        <% if deployment or repository -%>
+        <table class="list">
+          <thead>
+          	<th><%= deploy_label %></th>
+          	<th><%= author_label %></th>
+          	<th>Comment</th>
+  	        <% if User.current.allowed_to?(:view_changesets, @project) -%>
+  	        <th>Revision</th>
+            <% end -%>
+  	        <% if User.current.allowed_to?(:manage_deployments, @project) -%>
+  	        <th>Actions</th>
+  	        <% end -%>
+          </thead>
+          <tbody>
+          	<tr>
+          	  <td><%= format_time(deployed_on) %></td>
+          	  <td><%= deployed_by %></td>
+          	  <td><%= textilizable comment %></td>
+          	  <% if User.current.allowed_to?(:view_changesets, @project) -%>
+          	  <td><%= changeset.revision %></td>
+          	  <% end -%>
+          	  <% if User.current.allowed_to?(:manage_deployments, @project) -%>
+          	  <td>
+          	    <% if can_promote -%>
+          	    <% promotion_form = true -%>
+          	    <% comment.gsub!("\n",'') -%>
+          	    <% comment.gsub!("\r",'') -%>
+  	  	        <%= link_to "Promote", "#", :onclick => "showAndUpdateForm('#{env.name}',\"#{comment}\",#{changeset.id});this.blur(); return false;" %>
+  	  	        <% end -%>
+          	  </td>
+          	  <% end -%>
+            </tr>
+          </tbody>
+        </table>
+        <% unless changeset.nil? -%>
+          <% if changeset.issues.visible.any? -%>
+            <%= render :partial => 'deployments/common/related_issues', :locals => { :changeset => changeset } %>  
+          <% end -%>
+        <% end %>
+        <% else -%>
+          <p class="nodata">No successful deployments</p>
+        <% end -%>
+      <% end -%>
+    <% end -%>
+    </div>
+    </div>
+    <% if promotion_form and next_env -%>
+    <div id="<%= env.name %>_deployment_form" class="deploy-popup-form">
+      <div class="box" style="margin: 0px; margin-bottom: 0px; border-top-width: 0px; border-bottom-width:0px -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px;">
+      <%= form_for @deployment, :url => url_for(:controller => 'deployments', :action => 'create', :id => @project), :html => { :id => "#{env.name}_actual_form" } do |f| %>
+        <%= render :partial => 'deployments/common/promotion_form', :locals => { :f => f, :deploy_from => env, :deploy_to => next_env, :type => "promote" } %>
+      <% end %>
+      </div>
+    </div>
+    <% end %>
+  <% end -%>
+  <% else -%>
+    <p class="nodata"><%= l(:text_deploy_no_targets) %>
+  <% end -%>
+<% else -%>
+  <p class="nodata"><%= l(:text_deploy_no_environments)%></p>
+<% end -%>
+</div>
+

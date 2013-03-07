@@ -2,7 +2,6 @@ class DeploymentTasksController < ApplicationController
   unloadable
   
   include DeploymentsHelper
-  include DeploymentTasksHelper
   
   before_filter :find_project
   before_filter :find_environment
@@ -41,7 +40,7 @@ class DeploymentTasksController < ApplicationController
       @task.order = @target.deployment_tasks.last.order.to_i + 1
     end
     if @task.save
-      redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+      redirect_to proc { url_for(:controller => 'deployments', :action => 'settings', :id => @project, :tab => 'settings') }
     end
   end
   
@@ -49,38 +48,39 @@ class DeploymentTasksController < ApplicationController
     @task = DeploymentTask.find(params[:task_id])
     @task.attributes = params[:deployment_task]
     if @task.save
-      redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+      redirect_to proc { url_for(:controller => 'deployments', :action => 'settings', :id => @project) }
     end
   end
   
   def delete
     @task = DeploymentTask.find(params[:task_id])
     @task.destroy
-    redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    redirect_to proc { url_for(:controller => 'deployments', :action => 'settings', :id => @project) }
   end
   
   def move_down
     @task = DeploymentTask.find(params[:task_id])
     @task.move_down
-    redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    redirect_to proc { url_for(:controller => 'deployments', :action => 'settings', :id => @project) }
   end
   
   def move_up
     @task = DeploymentTask.find(params[:task_id])
     @task.move_up
-    redirect_to proc { url_for(:controller => 'deployments', :action => 'index', :id => @project, :tab => 'settings') }
+    redirect_to proc { url_for(:controller => 'deployments', :action => 'settings', :id => @project) }
   end
   
   private
   def find_project
  # @project variable must be set before calling the authorize filter
-    @project = Project.find(params[:id])
+    @project = Project.find(params[:id],
+                            :include => :deployment_environments)
   rescue ActiveRecord::RecordNotFound
     render_404
   end
   
   def find_environment
-    @environment = DeploymentEnvironment.find(params[:environment_id])
+    @environment = @project.deployment_environments.find(params[:environment_id])
   rescue ActiveRecord::RecordNotFound
     render_404 
   end

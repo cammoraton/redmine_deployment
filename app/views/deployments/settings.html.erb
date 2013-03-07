@@ -1,0 +1,90 @@
+<%= render :partial => "deployments/common/navigation", :locals => { :current_tab => 'settings' } %>
+<%= form_for @settings, :url => {:action => 'update_settings', :id => @project }, :html => {:method=>:put} do |f| %>
+  <%= render :partial => 'deployment_settings/global_project_settings', :locals => {:f => f} %>
+<% end %>
+<div class="contextual">
+  <p>
+  	<%= link_to l(:label_deploy_new_environment), url_for(:controller => 'deployment_environments', :action => 'new', :id => @project), :class => 'icon icon-add' %>
+  </p>
+</div>
+<div id="environments">
+<h2><%= l(:label_deploy_settings_environments) %></h2>
+<p>&nbsp;</p>
+  <% unless @environments.empty? %>
+    <% @environments.each do |environment| %>
+      <div class="contextual">
+        <p>
+          <%= link_to l(:label_deploy_settings_environment_edit), url_for(:controller => 'deployment_environments', :action => 'edit', :id => @project, :environment_id => environment.id )%>
+        <% unless environment.order <= 1 %>
+  	   	  <%= link_to l(:label_deploy_settings_environment_move_up), url_for(:controller => 'deployment_environments', :action => 'move_up', :id => @project, :environment_id => environment.id ) %>
+  	   	<% end %>
+  	    <% unless @environments.last == environment %>
+  	   	  <%= link_to l(:label_deploy_settings_environment_move_down), url_for(:controller => 'deployment_environments', :action => 'move_down', :id => @project, :environment_id => environment.id ) %>
+  	   	<% end %>
+  	   	  <%= link_to l(:label_deploy_settings_environment_destroy), url_for(:controller => 'deployment_environments', :action => 'delete', :id => @project, :environment_id => environment.id )%>
+          <%= link_to l(:label_deploy_settings_environment_new_target), url_for(:controller => 'deployment_targets', :action => 'new', :id => @project, :environment_id => environment.id )%>
+  	   	</p>
+      </div>
+      <div id="<%= environment.name %>">
+        <h3><%= environment.name %></h3>
+        <p class="info"><%= environment.description %>&nbsp;</p>
+        <% unless environment.deployment_targets.empty? -%>
+        <div id="<%= environment.name %>_targets_fieldset">
+          <% environment.deployment_targets.each do |target| -%>
+          <div class="contextual">
+            <%= link_to l(:label_deploy_target_edit), url_for(:controller => 'deployment_targets', :action => 'edit', :id => @project, :environment_id => environment.id, :target_id => target.id) %>
+            <%= link_to l(:label_deploy_target_delete), url_for(:controller => 'deployment_targets', :action => 'delete', :id => @project, :environment_id => environment.id, :target_id => target.id) %>
+            <% unless target.is_dummy -%>
+  	        <%= link_to l(:label_deployment_task_new), url_for(:controller => 'deployment_tasks', :action => 'new', :id => @project, :environment_id => environment.id, :target_id => target.id) %> 
+            <% end -%>
+          </div>
+          <div id="<%= target.hostname %>">
+          <h4><%= target.hostname %></h4> 
+          <p class="info"><%= target.description %></p>
+          <% unless target.is_dummy -%>
+            <% unless target.deployment_tasks.empty? -%>
+            <table class="list">
+              <thead>
+  	            <th>Label</th>
+  	            <th>Type</th>
+  	            <th>Description</th>
+  	            <th>Actions</th>
+              </thead>
+              <tbody>
+  	          <% target.deployment_tasks.each do |task| -%>
+  	            <tr>
+  	              <td><%= task.label %></td>
+  	              <td><%= l("deployment_task_type_#{task.task_type}") %></td>
+  	              <td><%= task.description %></td>
+  	              <td>
+  	                <%= link_to l(:label_deployment_task_edit), url_for(:controller => 'deployment_tasks', :action => 'edit', :id => @project, :environment_id => environment.id, :target_id => target.id, :task_id => task.id) %>
+                  <% unless task.order <= 1 -%>
+                    <%= link_to l(:label_deployment_task_move_up), url_for(:controller => 'deployment_tasks', :action => 'move_up', :id => @project, :environment_id => environment.id, :target_id => target.id, :task_id => task.id) %>
+                  <% end -%>
+                  <% unless target.deployment_tasks.last == task -%>
+                    <%= link_to l(:label_deployment_task_move_down), url_for(:controller => 'deployment_tasks', :action => 'move_down', :id => @project, :environment_id => environment.id, :target_id => target.id, :task_id => task.id) %>
+                  <% end -%>
+                    <%= link_to l(:label_deployment_task_delete), url_for(:controller => 'deployment_tasks', :action => 'delete', :id => @project, :environment_id => environment.id, :target_id => target.id, :task_id => task.id) %>
+  	              </td>
+                </tr>
+  	         <% end -%>
+             </tbody>
+           </table>
+            <% else -%>
+            <p class="nodata"><%= l(:text_deploy_no_tasks) %></p>
+            <% end -%>
+          <% else -%> 
+          <p class="nodata"><%= l(:text_deploy_dummy_target) %></p>
+          <% end -%>
+          </div>
+          <% end -%>
+        </div>
+        <% else -%>
+        <p class="nodata">No deployment targets configured</p>
+        <% end -%>
+      </div>
+    <% end %>
+  <% else %>  
+    <p class="nodata"><%= l(:text_deploy_no_environments) %></p>
+  <% end %>
+</div>
