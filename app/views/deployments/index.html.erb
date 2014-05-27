@@ -82,7 +82,7 @@
           	    <% promotion_form = true -%>
           	    <% comment.gsub!("\n",'') -%>
           	    <% comment.gsub!("\r",'') -%>
-  	  	        <%= link_to "Promote", "#", :onclick => "showAndUpdateForm('#{env.name}',\"#{comment}\",#{changeset.id});this.blur(); return false;" %>
+  	  	        <%= link_to "Promote", "#", :onclick => "showAndUpdateForm('#{escape_javascript env.name}',\"#{escape_javascript comment}\",#{escape_javascript changeset.id});this.blur(); return false;" %>
   	  	        <% end -%>
           	  </td>
           	  <% end -%>
