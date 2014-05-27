@@ -40,7 +40,7 @@
        	<td>
        	  <% unless changeset.nil? %>
        	  <% if can_promote %>
-  	  	    <%= link_to "Promote", "#", :onclick => "showAndUpdateForm('#{this_env.name}',\"#{object.comment}\",#{changeset.id});this.blur(); return false;" %>
+  	  	    <%= link_to "Promote", "#", :onclick => "showAndUpdateForm('#{escape_javascript this_env.name}',\"#{escape_javascript object.comment}\",#{escape_javascript changeset.id});this.blur(); return false;" %>
   	  	  <% end %>
   	  	  <% end %>
   	  	  <% unless target.free? %>
